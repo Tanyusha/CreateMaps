@@ -1,0 +1,16 @@
+{% extends 'layout.html' %}
+{% block body %}
+    <div id="map"></div>
+<script>
+var None = '';
+
+    {% autoescape off %}
+        var lots = {{ lots }};
+        ymaps.ready(function (){
+            addMarks(lots);
+        });
+    {% endautoescape %}
+    </script>
+
+{% endblock %}
+
