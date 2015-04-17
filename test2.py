@@ -1,4 +1,14 @@
+from django.template.loader import get_template
+import os
 import pypyodbc
+
+from django.template import Context, Template
+
+
+os.environ.setdefault("DJANGO_SETTINGS_MODULE", "_project_.settings")
+from django.conf import settings
+
+
 
 
 db_file = r'C:\Users\Tanika\PycharmProjects\CreateMaps\base.mdb'
@@ -15,13 +25,34 @@ conn = pypyodbc.connect(odbc_conn_str)
 c = conn.cursor()
 c2 = conn.cursor()
 
-c.execute("select * from MSysRelationships;")
+# c.execute("select * from MSysRelationships;")
+# rows = c.fetchall()
+# for row in rows:
+#     print(row)
+
+lots = []
+c.execute("select ОПИ_Участки.Наименование, ОПИ_Участки.[Координата-широта], ОПИ_Участки.[Координата-долгота] from ОПИ_Участки;")
 rows = c.fetchall()
 for row in rows:
-    print(row)
+    if not row[1] or not row[2]:
+        continue
+    # coords = [row[1], row[2]]
+    if not row[0]:
+        lot = {'name':'', 'coords':[row[1], row[2]]}
+    else:
+        lot = {'name':row[0], 'coords':[row[1], row[2]]}
+    lots.append(lot)
+# print(lots)
+#
+# print(len(lots))
 
 
+t = get_template('index.html')
 
+c = Context({"lots": lots})
+f = open('gg.html', 'w', encoding='utf-8')
+f.write(t.render(c))
+f.close()
 
 def work_with_database(c, c2):
     for x in c.tables():
