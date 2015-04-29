@@ -1,0 +1,11 @@
+{% extends 'layout.html' %}
+{% block body %}
+    <h1>Choose database file.</h1>
+    <h2>We support: {% for x in databases %}{{ x }}{% endfor %}</h2>
+    <form action="{% url 'step1' %}" method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <input type="submit"/>
+    </form>
+{% endblock %}
+

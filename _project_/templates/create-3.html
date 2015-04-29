@@ -1,0 +1,12 @@
+{% extends 'layout.html' %}
+{% block body %}
+    <h1>Select main table</h1>
+    <form action="{% url 'step3' %}" method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        {{ form.as_p }}
+        {% for  table in tables.values %}
+            <p>{{ table.name }}</p>
+        {% endfor %}
+        <input type="submit"/>
+    </form>
+{% endblock %}

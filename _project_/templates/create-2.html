@@ -1,0 +1,10 @@
+{% extends 'layout.html' %}
+{% block body %}
+    <h1>Extra information:</h1>
+    <form action="{% url 'step2' %}" method="post" enctype="multipart/form-data">
+
+        {% csrf_token %}
+        {{ form.as_p }}
+        <input type="submit"/>
+    </form>
+{% endblock %}

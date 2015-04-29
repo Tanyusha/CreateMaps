@@ -1,73 +1,90 @@
-from django.template.loader import get_template
+from core.mdb import MDBDatabase
 import os
-import pypyodbc
-
-from django.template import Context, Template
+import utils
 
 
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "_project_.settings")
-from django.conf import settings
 
-
-
-
+# ---------------------Подключение к базе данных------------------------
 db_file = r'C:\Users\Tanika\PycharmProjects\CreateMaps\base.mdb'
 user = 'admin'
 password = 'Masterkey1'
-odbc_conn_str = 'DRIVER={Microsoft Access Driver (*.mdb)};DBQ=%s;UID=%s;PWD=%s;unicode_results=True' % \
-                (db_file, user, password)
 
-# pypyodbc.win_create_mdb('D:\\database.mdb')
+conn = utils.make_mdb_odbc_connection(db_file, user, password)
+c = utils.make_cursor(conn)
 
-# connection_string = 'Driver={Microsoft Access Driver (*.mdb)};DBQ=D:\\database.mdb'
+# ---------------------Функция преобразования данных в формат, пригодный для наложения на Яндекс.Карту------------------------
+def create_yandex_point_object(point_id, coords, name, lala):
+    point_json = {
+        "type": "Feature",
+        "id": point_id,
+        "geometry": {
+            "type": "Point",
+            "coordinates": coords
+        },
+        "properties": {
+            "balloonContent": '<h3>'+name+"</h3>",
+            "clusterCaption": name,
+            "hintContent": "Текст подсказки",
+            "name": lala
+        }
+    }
+    return point_json
 
-conn = pypyodbc.connect(odbc_conn_str)
-c = conn.cursor()
-c2 = conn.cursor()
+# ---------------------Считывание данных из базы и формирование объектов для наложения на карту------------------------
+points = []
+# c.execute(
+#     "select ОПИ_Участки.ИДУчастка, ОПИ_Участки.Наименование, ОПИ_Участки.[Координата-широта], ОПИ_Участки.[Координата-долгота] from ОПИ_Участки;")
 
-# c.execute("select * from MSysRelationships;")
-# rows = c.fetchall()
+
 # for row in rows:
-#     print(row)
-
-lots = []
-c.execute("select ОПИ_Участки.Наименование, ОПИ_Участки.[Координата-широта], ОПИ_Участки.[Координата-долгота] from ОПИ_Участки;")
-rows = c.fetchall()
-for row in rows:
-    if not row[1] or not row[2]:
-        continue
-    # coords = [row[1], row[2]]
-    if not row[0]:
-        lot = {'name':'', 'coords':[row[1], row[2]]}
-    else:
-        lot = {'name':row[0], 'coords':[row[1], row[2]]}
-    lots.append(lot)
-# print(lots)
+#     if not row[2] or not row[3]:
+#         continue
+#     name = row[1] if row[1] else ''
+#     coords = [float(row[2].replace(',', '.')), float(row[3].replace(',', '.'))]
+#     id_ = row[0]
+#     if count %2 == 0:
+#         lala = "Tanya"
+#     else:
+#         lala = 'Pasha'
+#     count += 1
 #
-# print(len(lots))
+#     point = create_yandex_point_object(id_, coords, name, lala)
+#     points.append(point)
+# # print(points)
+# json_points = {
+#   "type": "FeatureCollection",
+#   "features": points
+# }
+#
+# print(json_points)
+#
+# # ---------------------Создание файла data.json для наложения объектов на карту------------------------
+# json_points = json.dumps(json_points, separators=(',', ':'))
+# f = open('_project_/static/data.json', 'w')
+# f.write(json_points)
+# f.close()
 
+types = set()
 
-t = get_template('index.html')
-
-c = Context({"lots": lots})
-f = open('gg.html', 'w', encoding='utf-8')
-f.write(t.render(c))
-f.close()
-
+# ---------------------Тестирование работы с бд------------------------
 def work_with_database(c, c2):
     for x in c.tables():
-        print('-' * 20)
+
         # print(type(x))
         table_cat = x.get('table_cat')
         table_schema = x.get('table_schema')
         table_name = x.get('table_name')
         table_type = x.get('table_type')
         remarks = x.get('remarks')
+        # if not table_name.startswith('M'):
+        #     continue
+        print('-' * 20)
         print(x[1:])
-        print(table_cat, table_schema, table_name, table_type, remarks)
+        # print(table_cat, table_schema, table_name, table_type, remarks)
         for y in c2.columns(table_name):
             table_cat = y.get('table_cat')
-            table_schem = y.get('table_schem')
+            table_schem = y.get('table_schema')
             table_name = y.get('table_name')
             column_name = y.get('column_name')
             data_type = y.get('data_type')
@@ -85,12 +102,22 @@ def work_with_database(c, c2):
             ordinal_position = y.get('ordinal_position')
             is_nullable = y.get('is_nullable')
             # print(y[1:])
+            # types.add(type_name)
             # print(table_qualifier, table_schem, table_name, column_name, data_type, type_name, precision, length, scale,
             # radix, nullable, remarks)
-            print(table_schem, table_name, column_name, data_type, type_name, column_size, buffer_length,
-                  decimal_digits, num_prec_radix, nullable, remarks, column_def, sql_data_type, sql_datetime_sub,
-                  char_octet_length, ordinal_position, is_nullable)
-            print(c2.getTypeInfo(data_type))
+            # print(table_schem, table_name, column_name, data_type, type_name, column_size, buffer_length,
+            #       decimal_digits, num_prec_radix, nullable, remarks, column_def, sql_data_type, sql_datetime_sub,
+            #       char_octet_length, ordinal_position, is_nullable)
+            # print(c2.getTypeInfo(data_type))
 
 
+# c2 = utils.make_cursor(conn)
 # work_with_database(c, c2)
+# print(types)
+
+# первое слово - поле - внешний ключ, ссылающийся на 2-ю таблицу. второе слово - название таблицы с внешним ключом
+# третье слово - поле - идентификатор 2-ой таблицы, на который ссылается внешний ключ. Четвертое слово - название таблицы, на которую ссылается первая таблица.
+mdb = MDBDatabase(db_file, user, password)
+cols = mdb.tables()['MSysRelationships'].columns
+# print(list(x.name for x in cols))
+print(mdb.relationships())

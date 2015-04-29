@@ -1,15 +1,17 @@
 {% extends 'layout.html' %}
+{% block head %}
+    <script src="//api-maps.yandex.ru/2.1/?lang=ru_RU" type="text/javascript"></script>
+    <script src="/static/add_points.js" type="text/javascript"></script>
+{% endblock %}
+
 {% block body %}
     <div id="map"></div>
-<script>
-var None = '';
+    <script>
+        var None = '';
 
-    {% autoescape off %}
-        var lots = {{ lots }};
-        ymaps.ready(function (){
-            addMarks(lots);
-        });
-    {% endautoescape %}
+        {% autoescape off %}
+            ymaps.ready(init);
+        {% endautoescape %}
     </script>
 
 {% endblock %}
