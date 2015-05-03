@@ -1,12 +1,24 @@
 {% extends 'layout.html' %}
-{% block body %}
+{% block content %}
     <h1>Select main table</h1>
     <form action="{% url 'step3' %}" method="post" enctype="multipart/form-data">
         {% csrf_token %}
         {{ form.as_p }}
         {% for  table in tables.values %}
-            <p>{{ table.name }}</p>
+            <input type="radio" name="table" value="{{ table.name }}"><label>{{ table.name }}</label>
+            </br>
+            <span>
+            {% for column in table.columns %}
+                {% if forloop.last %}
+                    {{ column.name }}
+                {% else %}
+                {{ column.name }},
+                {% endif %}
+            {% endfor %}
+                </span>
+            </br>
         {% endfor %}
+        </br>
         <input type="submit"/>
     </form>
 {% endblock %}

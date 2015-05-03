@@ -1,0 +1,25 @@
+{% extends 'layout.html' %}
+{% block content %}
+    <h1>Choose coordinates</h1>
+    <form action="{% url 'step4' %}" method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <h3>{{ table }}</h3>
+        <table>
+            <tr>
+                <td>Поля таблицы</td>
+                <td>Координата X</td>
+                <td>Координата Y</td>
+            </tr>
+            {% for column in columns %}
+                <tr>
+                    <td>{{ column }}</td>
+                    <td><input type="radio" name="coord-X" value="{{ column }}"></td>
+                    <td><input type="radio" name="coord-Y" value="{{ column }}"></td>
+                </tr>
+            {% endfor %}
+            </br>
+        </table>
+        <input type="submit"/>
+    </form>
+{% endblock %}
