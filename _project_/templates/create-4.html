@@ -4,18 +4,24 @@
     <h1>Шаг 4: выбор координат объектов</h1>
         {% csrf_token %}
         {{ form.as_p }}
-        <h3>{{ table }}</h3>
-        <table>
+        <h3>Таблица: {{ table }}</h3>
+        <table class="table-for-choosing-coord">
             <tr>
-                <td>Поля таблицы</td>
-                <td>Координата X</td>
-                <td>Координата Y</td>
+                <th>Поля таблицы</th>
+                <th>Координата X</th>
+                <th>Координата Y</th>
             </tr>
             {% for column in columns %}
                 <tr>
                     <td>{{ column }}</td>
-                    <td><input type="radio" name="coord-X" value="{{ column }}"></td>
-                    <td><input type="radio" name="coord-Y" value="{{ column }}"></td>
+                    <td>
+                        <input type="radio" name="coord-X" value="{{ column }}" id="coord-X-for-{{ column }}">
+                        <label class="label-for-radio label-for-radio-coords" for="coord-X-for-{{ column }}"> </label>
+                    </td>
+                    <td>
+                        <input type="radio" name="coord-Y" value="{{ column }}" id="coord-Y-for-{{ column }}">
+                        <label class="label-for-radio label-for-radio-coords" for="coord-Y-for-{{ column }}"> </label>
+                    </td>
                 </tr>
             {% endfor %}
             </br>

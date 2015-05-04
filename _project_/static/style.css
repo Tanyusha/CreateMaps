@@ -11,7 +11,7 @@ h1, h2, h3 {
 }
 
 p, input, span, label {
-    color:#6E6D6D;
+    color: #6E6D6D;
 }
 
 .create-content {
@@ -31,18 +31,21 @@ p, input, span, label {
 .no-border-radius {
     border-radius: 0;
 }
+
 .form-group {
-    width:100%;
+    width: 100%;
     max-width: 730px;
-    min-width:230px;
-    margin:20px auto 40px auto;
-    padding:15px 40px 40px 40px;
-    border:1px solid #5bc0de;
+    min-width: 230px;
+    margin: 20px auto 40px auto;
+    padding: 15px 40px 40px 40px;
+    border: 1px solid #5bc0de;
     background-color: rgba(240, 248, 255, 0.35);
-    box-shadow: 0 1px 5px rgba(0,0,0,.075);
+    box-shadow: 0 1px 5px rgba(0, 0, 0, .075);
+    /*position: relative;*/
 }
+
 input {
-    margin:20px 0;
+    margin: 20px 0;
 }
 
 label {
@@ -53,10 +56,20 @@ label {
 .label-for-radio::before,
 .label-for-radio::after {
     position: absolute;
-    top: 4px;
-    left: -25px;
     content: '';
     border-radius: 50%;
+}
+
+.label-for-radio-tables::before,
+.label-for-radio-tables::after {
+    top: 4px;
+    left: -25px;
+}
+
+.label-for-radio-coords::before,
+.label-for-radio-coords::after {
+    top: 0;
+    left: 40px;
 }
 
 .label-for-radio::before {
@@ -70,8 +83,8 @@ label {
     height: 16px;
     background-color: #5bc0de;
     transform: scale(0);
-    transition-property:transform;
-    transition-duration:0.28s;
+    transition-property: transform;
+    transition-duration: 0.28s;
 }
 
 input[type="radio"] {
@@ -86,20 +99,46 @@ input[type="radio"]:checked ~ .label-for-radio::after {
     display: none;
 }
 
-.input-radio:last-child {
-    margin-bottom: 0;
-}
-.no-margin-top {
-    margin-top: 0;
-}
 
-.button-for-table{
-    width: 2em;  height: 2em;
+.button-for-table {
+    width: 2em;
+    height: 2em;
     padding: 0;
 }
 
 .icons {
     font-size: 12px;
-    color:white;
+    color: white;
 }
 
+.btn-for-table {
+    position: relative;
+}
+
+.checked-btn-for-table {
+    display: none;
+}
+
+.button:hover::after {
+    content: attr(data-title);
+    position: absolute;
+    left: 30px;
+    top: 0;
+    z-index: 1;
+    background: rgba(238, 238, 238, 0.9);
+    color: #7e7e7e;
+    font-family: Arial, sans-serif;
+    font-size: 12px;
+    padding: 5px 10px;
+    border: 1px solid #c9c9c9;
+}
+
+.table-for-choosing-coord td, .table-for-choosing-coord th {
+    border: 1px solid #5bc0de;
+    padding: 10px 10px 15px 10px;
+}
+
+
+.table_fields {
+    margin-bottom:20px;
+}
