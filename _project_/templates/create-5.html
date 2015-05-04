@@ -1,13 +1,13 @@
-{% extends 'layout.html' %}
+{% extends 'create.html' %}
 {% block content %}
-    <h1>Choose extra data</h1>
-    <form action="{% url 'step5' %}" method="post" enctype="multipart/form-data">
+    <form action="{% url 'step5' %}" method="post" enctype="multipart/form-data" class="form-group">
+    <h1>Шаг 5: дополнительная информация</h1>
         {% csrf_token %}
         {{ form.as_p }}
         {{ coord_X }}
         </br>
         {{ coord_Y }}
         </br>
-        <input type="submit"/>
+        <input type="submit" class="btn btn-info no-border-radius"/>
     </form>
 {% endblock %}

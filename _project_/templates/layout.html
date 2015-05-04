@@ -5,11 +5,11 @@
     <title>Месторождения</title>
     <script src="//code.jquery.com/jquery-1.11.2.min.js"></script>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css">
+    {% load staticfiles %}
+    <link rel="stylesheet" type="text/css" href="{% static 'style.css' %}" >
     {% block head %}{% endblock %}
 </head>
 <body>
-    <content>
-{% block content %}{% endblock %}
-    </content>
+{% block body %}{% endblock %}
 </body>
 </html>
