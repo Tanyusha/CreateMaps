@@ -9,7 +9,7 @@ $('.non-checked-btn-for-table').click(function (event) {
     var p_id = "#p-for-"+ table_name;
     var button_id = "#button-close-for-"+ table_name;
     $(this).css('display', 'none');
-    $(button_id).css('display', 'block');
+    $(button_id).css('display', 'inline');
     $(p_id).css('display', 'block');
     $(p_id).css('margin', '10px 0 0 0');
 });
@@ -19,7 +19,7 @@ $('.checked-btn-for-table').click(function (event) {
     var table_name = $(this).attr('table-name');
     var p_id = "#p-for-"+ table_name;
     var button_id = "#button-open-for-"+ table_name;
-    $(button_id).css('display', 'block');
+    $(button_id).css('display', 'inline');
     $(this).css('display', 'none');
     $(p_id).css('display', 'none');
 });

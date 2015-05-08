@@ -5,11 +5,17 @@
         {% csrf_token %}
         {{ form.as_p }}
         <h3>Таблица: {{ table }}</h3>
+        <p>Укажите координаты объектов, для того, чтобы отобразить их на карте</p>
+        {% if error != 0 %}
+            <div class="alert alert-danger field-errors">
+                {{ error }}
+            </div>
+        {% endif %}
         <table class="table-for-choosing-coord">
             <tr>
                 <th>Поля таблицы</th>
-                <th>Координата X</th>
-                <th>Координата Y</th>
+                <th>Широта</th>
+                <th>Долгота</th>
             </tr>
             {% for column in columns %}
                 <tr>

@@ -79,10 +79,15 @@ def create_step_3(request):
     #         print(column.name)
         #     column_list.append(column.name)
         # tables_list['tables[table].name']=column_list
+    error = 0
     if request.method == "POST":
-        request.session["step-3-selected-table"] = request.POST['table']
-        return redirect('step4')
-    return render(request, 'create-3.html', {'tables': tables})
+        if 'table' in request.POST.keys():
+            request.session["step-3-selected-table"] = request.POST['table']
+            return redirect('step4')
+        else:
+            error = 1
+            return render(request, 'create-3.html', {'tables': tables, 'error': error})
+    return render(request, 'create-3.html', {'tables': tables, 'error': error})
 
 
 def create_step_4(request):
@@ -101,11 +106,24 @@ def create_step_4(request):
             for column in tables[table].columns:
                 column_list.append(column.name)
             break
+    error = 0
     if request.method == "POST":
-        request.session["step-4-coord-X"] = request.POST['coord-X']
-        request.session["step-4-coord-Y"] = request.POST['coord-Y']
-        return redirect('step5')
-    return render(request, 'create-4.html', {'table': selected_table, 'columns': column_list})
+        if 'coord-X' in request.POST.keys():
+                if 'coord-Y' in request.POST.keys():
+                    request.session["step-4-coord-X"] = request.POST['coord-X']
+                    request.session["step-4-coord-Y"] = request.POST['coord-Y']
+                    return redirect('step5')
+                else:
+                    error = "Вы не указали долготу объектов"
+                    return render(request, 'create-4.html', {'table': selected_table, 'columns': column_list, 'error': error})
+        else:
+            if 'coord-Y' in request.POST.keys():
+                error = "Вы не указали широту объектов"
+                return render(request, 'create-4.html', {'table': selected_table, 'columns': column_list, 'error': error})
+            else:
+                error = "Вы не указали координаты объектов"
+                return render(request, 'create-4.html', {'table': selected_table, 'columns': column_list, 'error': error})
+    return render(request, 'create-4.html', {'table': selected_table, 'columns': column_list, 'error': error})
 
 def create_step_5(request):
     ext = request.session.get('step-2-database')
