@@ -54,9 +54,11 @@ def make_cursor(conn):
 class MDBDatabase(Database):
     @staticmethod
     def required_info_for_init():
-        return {'file': DatabaseInitInfoType.FILEPATH,
-                'username': DatabaseInitInfoType.STR,
-                'password': DatabaseInitInfoType.STR}
+        return {
+            'file': DatabaseInitInfoType.FILEPATH,
+            'username': DatabaseInitInfoType.STR,
+            'password': DatabaseInitInfoType.PASSWORD
+        }
 
     def __init__(self, file, username, password):
         self._conn = make_mdb_odbc_connection(file, username, password)

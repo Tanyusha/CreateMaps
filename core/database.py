@@ -6,7 +6,7 @@ TableType = namedtuple('TableType', ('TABLE', 'SYSTEM', 'OTHER'))
 ColumnInfo = namedtuple('ColumnInfo', ('name', 'type', 'index', 'size', 'django_field_type', 'nullable', 'converter'))
 TableInfo = namedtuple('TableInfo', ('name', 'type', 'columns'))
 RelationInfo = namedtuple('RelationInfo', ('table', 'table_fk', 'relation_table', 'relation_table_pk'))
-DatabaseInitInfoType = namedtuple('DatabaseInitInfoType', ('STR', 'INT', 'FLOAT', 'FILEPATH'))
+DatabaseInitInfoType = namedtuple('DatabaseInitInfoType', ('STR', 'INT', 'FLOAT', 'FILEPATH', 'PASSWORD'))
 
 
 class Database(object):
