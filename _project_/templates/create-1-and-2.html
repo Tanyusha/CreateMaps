@@ -1,0 +1,32 @@
+{% extends 'create.html' %}
+{% load widget_tweaks %}
+{% block content %}
+        {% block titles %}{% endblock %}
+        {% csrf_token %}
+        {% if form.non_field_errors %}
+            <div class="alert alert-danger field-errors">
+                {{ form.non_field_errors }}
+            </div>
+        {% endif %}
+        {% for field in form %}
+            <div class="field"{% if field.is_hidden %} style="display: none"{% endif %}>
+                {% if field.errors %}
+                    <div class="alert alert-danger field-errors">
+                        {% for error in field.errors %}
+                            {{ error }}
+                        {% endfor %}
+                        <div class="field-input">
+                            {% render_field field placeholder=field.label %}
+                        </div>
+                    </div>
+                {% else %}
+                    <div class="field-input">
+                        {% render_field field placeholder=field.label %}
+                    </div>
+                {% endif %}
+            </div>
+
+        {% endfor %}
+        <input type="submit" class="btn btn-info no-border-radius"/>
+    </form>
+{% endblock %}

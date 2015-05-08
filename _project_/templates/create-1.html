@@ -1,12 +1,7 @@
-{% extends 'create.html' %}
-{% block content %}
+{% extends 'create-1-and-2.html' %}
+{% block titles %}
     <form action="{% url 'step1' %}" method="post" enctype="multipart/form-data" class="form-group">
-        <h1>Шаг 1: выбор файла базы данных</h1>
-
-        <p>Мы поддерживаем: {% for x in databases %}{{ x }}{% endfor %}<p>
-        {% csrf_token %}
-        {{ form.as_p }}
-        <input type="submit" class="btn btn-info no-border-radius"/>
-    </form>
+    <h1>Шаг 1: выбор файла базы данных</h1>
+    <h3>Мы поддерживаем: {% for x in databases %}{{ x }}{% endfor %}</h3>
+    <p>Для отображения объектов на карте, выберите файл базы данных, в которой хранится иноформация о них</p>
 {% endblock %}
-
