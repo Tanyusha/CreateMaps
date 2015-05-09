@@ -1,6 +1,10 @@
-{% extends 'create-1-and-2.html' %}
-{% block titles %}
+{% extends 'create.html' %}
+{% block content %}
     <form action="{% url 'step2' %}" method="post" enctype="multipart/form-data" class="form-group">
-    <h1>Шаг 2: подключение к базе данных</h1>
-    <p>Укажите данные, необходимые для подключения к вашей базе данных</p>
+        <h1>Шаг 2: заполните информацию для работы с базой данных</h1>
+        <p class="help-block">Укажите данные, необходимые для подключения к вашей базе данных</p>
+        {% csrf_token %}
+        {% include "form.html" with form=form %}
+        <input type="submit" class="btn btn-info no-border-radius"/>
+    </form>
 {% endblock %}

@@ -1,9 +1,7 @@
 {% extends 'create.html' %}
 {% block content %}
     <form action="{% url 'step4' %}" method="post" enctype="multipart/form-data" class="form-group">
-    <h1>Шаг 4: выбор координат объектов</h1>
-        {% csrf_token %}
-        {{ form.as_p }}
+        <h1>Шаг 4: укажите широту и долготу</h1>
         <h3>Таблица: {{ table }}</h3>
         <p>Укажите координаты объектов, для того, чтобы отобразить их на карте</p>
         {% if error != 0 %}
@@ -30,8 +28,8 @@
                     </td>
                 </tr>
             {% endfor %}
-            </br>
         </table>
+        {% csrf_token %}
         <input type="submit" class="btn btn-info no-border-radius"/>
     </form>
 {% endblock %}

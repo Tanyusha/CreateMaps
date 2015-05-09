@@ -190,6 +190,9 @@ label[for="id_file"] {
     margin-bottom:10px;
 }
 
+.tables {
+    padding-left: 25px;
+}
 .table, .btn-for-table {
     display: inline;
 }

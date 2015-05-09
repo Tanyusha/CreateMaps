@@ -1,17 +1,18 @@
 {% extends 'create.html' %}
 {% block content %}
     <form action="{% url 'step3' %}" method="post" enctype="multipart/form-data" class="form-group">
-        <h1>Шаг 3: выбор основной таблицы с координатами объектов</h1>
+        <h1>Шаг 3: выберите таблицу с координатами</h1>
         {% csrf_token %}
-        {{ form.as_p }}
-        <p>Для того, чтобы добавить объекты на карту, выберете таблицу, в которой храянтся их координаты</p>
-        {% if error == 1 %}
-            <div class="alert alert-danger field-errors">
-                <p>Вы не выбрали таблицу с координатами</p>
-            </div>
-        {% endif %}
-        {% for  table in tables.values %}
-            <div class="tables">
+        <p class="help-block">Для того, чтобы добавить объекты на карту, выберете таблицу, в которой храянтся их координаты</p>
+        <div class="errorlist">
+            {% if error %}
+                <div class="alert alert-danger field-errors">
+                    {{ error }}
+                </div>
+            {% endif %}
+        </div>
+        <div class="tables">
+            {% for table in tables %}
                 <div class="table">
                     <input type="radio" name="table" value="{{ table.name }}" id="{{ table.name }}">
                     <label class="label-for-radio label-for-radio-tables"
@@ -42,8 +43,8 @@
                         {% endfor %}
                     </p>
                 </div>
-            </div>
-        {% endfor %}
+            {% endfor %}
+        </div>
         <input type="submit" class="btn btn-info no-border-radius"/>
     </form>
     <script src="//code.jquery.com/jquery-1.11.2.min.js"></script>
