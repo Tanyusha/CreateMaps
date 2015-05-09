@@ -12,12 +12,12 @@ DatabaseInitInfoType = namedtuple('DatabaseInitInfoType', ('STR', 'INT', 'FLOAT'
 class Database(object):
     @staticmethod
     def required_info_for_init():
-        return {}
+        return []
 
     def relationships(self):
         return NotImplemented
 
-    def tables(self):
+    def tables(self, type=None):
         return NotImplemented
 
     def execute(self, sql, args):

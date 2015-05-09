@@ -1,13 +1,18 @@
 from core.database import DatabaseInitInfoType
 from django import forms
+from django.forms import TextInput
 
 
 class HiddenField(forms.CharField):
     widget = forms.HiddenInput
 
 
+class PasswordInput(TextInput):
+    input_type = 'password'
+
+
 class PasswordField(forms.CharField):
-    widget = forms.PasswordInput
+    widget = PasswordInput
 
 
 DJANGO_FIELD_MAP = {
@@ -20,5 +25,5 @@ DJANGO_FIELD_MAP = {
 
 
 def make_form(fields):
-    fields = {k: DJANGO_FIELD_MAP.get(v)() for k, v in fields.items()}
+    fields = {k: DJANGO_FIELD_MAP.get(v)() for k, v in fields}
     return type('Form', (forms.Form, ), fields)

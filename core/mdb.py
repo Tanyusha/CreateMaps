@@ -54,16 +54,16 @@ def make_cursor(conn):
 class MDBDatabase(Database):
     @staticmethod
     def required_info_for_init():
-        return {
-            'file': DatabaseInitInfoType.FILEPATH,
-            'username': DatabaseInitInfoType.STR,
-            'password': DatabaseInitInfoType.PASSWORD
-        }
+        return [
+            ('file', DatabaseInitInfoType.FILEPATH),
+            ('username', DatabaseInitInfoType.STR),
+            ('password', DatabaseInitInfoType.PASSWORD),
+        ]
 
     def __init__(self, file, username, password):
         self._conn = make_mdb_odbc_connection(file, username, password)
 
-    def tables(self):
+    def tables(self, type=None):
         c = make_cursor(self._conn)
         c2 = make_cursor(self._conn)
         tables = {}
@@ -71,6 +71,9 @@ class MDBDatabase(Database):
             table_name = x.get('table_name')
             table_type = x.get('table_type')
             table_type = ODBC_TO_DATABASE_TABLE_TYPE.get(table_type, TableType.OTHER)
+            if type and type != table_type:
+                continue
+
             table_cols = []
             for i, y in enumerate(c2.columns(table_name)):
                 column_name = y.get('column_name')
