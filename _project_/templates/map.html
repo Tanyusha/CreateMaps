@@ -1,0 +1,53 @@
+{% extends 'layout.html' %}
+{% block head %}
+    <script src="//api-maps.yandex.ru/2.1/?lang=ru_RU" type="text/javascript"></script>
+    <script src="/static/add_points.js" type="text/javascript"></script>
+{% endblock %}
+
+{% block body %}
+    <div class="map-content">
+        <h1 class="center">CreateMaps</h1>
+
+        <h2>Полезные ископаемые Свердлвоской области</h2>
+
+        <p>Карта содержит информацию о месторождениях Свердловской области</p>
+
+        <div class="filters">
+            <div class="filter">
+                <label for="year">Год</label>
+                <select name="year" id="year">
+                    <option>Все</option>
+                    <option>2013</option>
+                    <option>2012</option>
+                </select>
+            </div>
+            <div class="filter">
+                <label for="birthplace">Месторождения</label>
+                <select name="birthplace">
+                    <option>Все</option>
+                    <option>Речелгинское №1649</option>
+                    <option>Ширь N1657</option>
+                </select>
+            </div>
+            <div class="filter">
+                <label for="minerals">Полезные ископаемые</label>
+                <select name="minerals">
+                    <option>Все</option>
+                    <option>Алевролит</option>
+                    <option>Базальт</option>
+                </select>
+            </div>
+        </div>
+
+        <div id="map"></div>
+    </div>
+    <script>
+        var None = '';
+
+        {% autoescape off %}
+            ymaps.ready(init);
+        {% endautoescape %}
+    </script>
+
+{% endblock %}
+

@@ -1,18 +1,21 @@
-{% extends 'layout.html' %}
-{% block head %}
-    <script src="//api-maps.yandex.ru/2.1/?lang=ru_RU" type="text/javascript"></script>
-    <script src="/static/add_points.js" type="text/javascript"></script>
+{% extends 'to_center.html' %}
+{% block content %}
+    <h1 class="center">CreateMaps</h1>
+    <h3 class="center">Добро пожаловать на сервис просмотра и создания тематических карт!</h3>
+    <div class="enter-or-registration">
+    <h4 class="center">Карты не созданы! Вы можете стать первым!</h4>
+        <p>Для создания новой карты, <a>войдите</a> или <a>зарегестрируйтесь</a></p>
+    </div>
+{#        <label for="created-maps" class="label-created-maps" class="center">Для посмотра созданной карты, выберите#}
+{#            интересующую вас карту:</label>#}
+{#        <table class="table-for-choosing-map">#}
+{#            <tr>#}
+{#                <th>Название карты</th>#}
+{#                <th>Описание</th>#}
+{#            </tr>#}
+{#            <tr>#}
+{#                <td><a>Полезные ископаемые Свердловской области</a></td>#}
+{#                <td>Карта содержит информацию о месторождениях Свердловской области</td>#}
+{#            </tr>#}
+{#        </table>#}
 {% endblock %}
-
-{% block body %}
-    <div id="map"></div>
-    <script>
-        var None = '';
-
-        {% autoescape off %}
-            ymaps.ready(init);
-        {% endautoescape %}
-    </script>
-
-{% endblock %}
-

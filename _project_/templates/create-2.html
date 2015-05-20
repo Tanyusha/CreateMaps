@@ -1,7 +1,8 @@
-{% extends 'create.html' %}
+{% extends 'to_center.html' %}
 {% block content %}
     <form action="{% url 'step2' %}" method="post" enctype="multipart/form-data" class="form-group">
-        <h1>Шаг 2: заполните информацию для работы с базой данных</h1>
+        <h1>Публикация данных</h1>
+        <h2>Шаг 2: заполните информацию для работы с источником данных</h2>
         <p class="help-block">Укажите данные, необходимые для подключения к вашей базе данных</p>
         {% csrf_token %}
         {% include "form.html" with form=form %}

@@ -1,35 +1,13 @@
-{% extends 'create.html' %}
+{% extends 'to_center.html' %}
 {% block content %}
     <form action="{% url 'step4' %}" method="post" enctype="multipart/form-data" class="form-group">
-        <h1>Шаг 4: укажите широту и долготу</h1>
-        <h3>Таблица: {{ table }}</h3>
-        <p>Укажите координаты объектов, для того, чтобы отобразить их на карте</p>
-        {% if error != 0 %}
-            <div class="alert alert-danger field-errors">
-                {{ error }}
-            </div>
-        {% endif %}
-        <table class="table-for-choosing-coord">
-            <tr>
-                <th>Поля таблицы</th>
-                <th>Широта</th>
-                <th>Долгота</th>
-            </tr>
-            {% for column in columns %}
-                <tr>
-                    <td>{{ column }}</td>
-                    <td>
-                        <input type="radio" name="coord-X" value="{{ column }}" id="coord-X-for-{{ column }}">
-                        <label class="label-for-radio label-for-radio-coords" for="coord-X-for-{{ column }}"> </label>
-                    </td>
-                    <td>
-                        <input type="radio" name="coord-Y" value="{{ column }}" id="coord-Y-for-{{ column }}">
-                        <label class="label-for-radio label-for-radio-coords" for="coord-Y-for-{{ column }}"> </label>
-                    </td>
-                </tr>
-            {% endfor %}
-        </table>
+    <h1>Публикация данных</h1>
+        <h2>Шаг 4: выберите таблицу с координатами</h2>
         {% csrf_token %}
-        <input type="submit" class="btn btn-info no-border-radius"/>
+        <p class="help-block">Для того, чтобы добавить объекты на карту, выберете таблицу, в которой храянтся их координаты</p>
+        {% include "list_of_tables.html" %}
+        <input type="submit" class="btn btn-info no-border-radius" value="Выбрать"/>
     </form>
+    <script src="//code.jquery.com/jquery-1.11.2.min.js"></script>
+    <script src="/static/script.js" type="text/javascript"></script>
 {% endblock %}

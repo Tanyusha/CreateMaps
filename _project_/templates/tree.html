@@ -1,0 +1,59 @@
+<div class="clearfix"></div>
+<ul class="spoiler__content">
+    {% for node, leafs in tree.items %}
+        <li class="spoiler">
+            <div class="spoiler__title field">
+                {{ node }}
+
+                {% if leafs %}
+                    <div class="btn-for-table">
+                        <button class="btn btn-info no-border-radius no-margin-top button-for-field non-checked-btn-for-field button"
+                                field-name="{{ node }}" data-title="Показать связанные поля"
+                                id="button-open-for-{{ node }}">
+                        <span class="icons glyphicon glyphicon-plus" id="span-for-{{ node }}"
+                              aria-hidden="true"></span></button>
+                    </div>
+                    <div class="btn-for-table">
+                        <button class="btn btn-info no-border-radius no-margin-top button-for-field checked-btn-for-field button"
+                                field-name="{{ node }}" data-title="Скрыть связанные поля"
+                                id="button-close-for-{{ node }}">
+                        <span class="icons glyphicon glyphicon-minus" id="span-for-{{ node }}"
+                              aria-hidden="true"></span></button>
+                    </div>
+                {% endif %}
+            </div>
+{#                    <div class="check-box-for-choose-fields fourth-field">#}
+{#                <select>#}
+{#                    <option>-</option>#}
+{#                    <option>Месторождения</option>#}
+{#                </select>#}
+{#            </div>#}
+            <div class="check-box-for-choose-fields fourth-field">
+                <input type="text" name="name-of-field" placeholder="{{ node }}" id="name-of-field-{{ node }}">
+                <label class="label-for-text"
+                       for="name-of-field-{{ node }}"></label>
+            </div>
+            <div class="check-box-for-choose-fields third-field">
+                <input type="checkbox" name="required-field" placeholder="{{ node }}" id="required-field-{{ node }}">
+                <label class="label-for-required-field"
+                       for="required-field-{{ node }}"></label>
+            </div>
+            <div class="check-box-for-choose-fields second-field">
+                <input type="checkbox" name="filter" value="{{ node }}" id="filter-{{ node }}">
+                <label class="label-for-checkbox"
+                       for="filter-{{ node }}"></label>
+            </div>
+            <div class="check-box-for-choose-fields first-field">
+                <input type="checkbox" name="selected-field" value="{{ node }}" id="selected-field-{{ node }}">
+                <label class="label-for-checkbox"
+                       for="selected-field-{{ node }}"></label>
+            </div>
+
+            {% if leafs %}
+                {% include "tree.html" with tree=leafs %}
+            {% endif %}
+
+        </li>
+        <div class="clearfix"></div>
+    {% endfor %}
+</ul>

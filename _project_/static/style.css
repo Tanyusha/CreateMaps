@@ -6,33 +6,44 @@ html, body {
     margin: 0;
 }
 
-h1, h2, h3 {
+h1, h2, h3, h4 {
     color: #959595;
 }
 
-p, input, span, label {
+p, input, span, label, ul {
     color: #6E6D6D;
 }
 
-.create-content {
+.main-content {
     width: 70%;
-    height: 70%;
+    /*height: 70%;*/
     padding: 0;
     margin: 20px auto;
 }
 
 #map {
-    width: 100%;
-    height: 100%;
-    padding: 0;
-    margin: 0;
+    /*width: 100%;*/
+    /*height: 100%;*/
+    /*padding: 0;*/
+    /*margin: 0;*/
+    width: 65%;
+    height: 65%;
+    border:1px solid #6E6D6D;
+    float: right;
 }
+
+/*.created-map {*/
+    /*width: 65%;*/
+    /*height: 65%;*/
+    /*border:1px solid #6E6D6D;*/
+    /*float: right;*/
+/*}*/
 
 .no-border-radius {
     border-radius: 0;
 }
 
-.form-group {
+.content {
     width: 100%;
     max-width: 730px;
     min-width: 230px;
@@ -44,11 +55,27 @@ p, input, span, label {
     /*position: relative;*/
 }
 
+.map-content {
+    width: 100%;
+    height:100%;
+    background-color: rgba(240, 248, 255, 0.35);
+    padding: 15px 40px 40px 40px;
+}
+
+.filters {
+    float: left;
+    width: 35%;
+    height: 35%;
+}
+
+.filter {
+    display: block;
+}
 input {
     margin: 20px 0;
 }
 
-label {
+.label-for-radio, .label-for-radio-tables, .label-for-radio-map {
     position: relative;
     cursor: pointer;
 }
@@ -70,15 +97,16 @@ label {
     left: -27px;
 }
 
-.label-for-radio-coords::before {
-    top: 0;
-    left: 40px;
+.label-for-radio-coords::before,
+.label-for-radio-map::before {
+    top: -5px;
+    left: 4px;
 }
 
-
-.label-for-radio-coords::after {
-    top: -2px;
-    left: 38px;
+.label-for-radio-coords::after,
+.label-for-radio-map::after{
+    top: -7px;
+    left: 2px;
 }
 
 .label-for-radio::before {
@@ -108,8 +136,7 @@ input[type="radio"]:checked ~ .label-for-radio::after {
     display: none;
 }
 
-
-.button-for-table {
+.button-for-table, .button-for-field {
     width: 13px;
     height: 13px;
     padding: 0;
@@ -119,18 +146,18 @@ input[type="radio"]:checked ~ .label-for-radio::after {
     font-size: 9px;
     color: white;
     top: -6px;
-    left:0;
+    left: 0;
 }
 
 .glyphicon-minus {
-    left:-1px;
+    left: -1px;
 }
 
 .btn-for-table {
     position: relative;
 }
 
-.checked-btn-for-table {
+.checked-btn-for-table, .checked-btn-for-field {
     display: none;
 }
 
@@ -148,51 +175,157 @@ input[type="radio"]:checked ~ .label-for-radio::after {
     /*border: 1px solid #c9c9c9;*/
 }
 
-.table-for-choosing-coord {
-    width:100%
+.table-for-choosing-coord, .table-for-fields-with-path, .table-for-choosing-map {
+    width: 100%
 }
 
-.table-for-choosing-coord th {
+.table-for-choosing-coord th, .table-for-fields-with-path th{
     text-align: center;
 }
 
-.table-for-choosing-coord td, .table-for-choosing-coord th {
+.table-for-choosing-coord td, .table-for-choosing-coord th, .table-for-choosing-map td, .table-for-choosing-map th {
     border: 1px solid #5bc0de;
     padding: 10px 10px 15px 10px;
 }
 
-
 .table_fields {
-    margin-bottom:20px;
+    margin-bottom: 20px;
+}
+
+.spoiler__content {
+    /*display: none;*/
 }
 
 .errorlist {
-    padding-left:0;
+    padding-left: 0;
 }
+
 .errorlist li {
     list-style-type: none;
 }
+
 label[for="id_file"] {
     display: none;
 }
 
 #id_file {
-    margin-bottom:0;
+    margin-bottom: 0;
 }
 
 .field-errors {
     /*margin-bottom: 0;*/
-    padding:5px;
+    padding: 5px;
 }
 
 .field-input input {
-    margin-top:10px;
-    margin-bottom:10px;
+    margin-top: 10px;
+    margin-bottom: 10px;
 }
 
 .tables {
     padding-left: 25px;
 }
+
 .table, .btn-for-table {
     display: inline;
 }
+
+.radio-btn-center-in-table, .radio-btn-center-in-choose-map{
+    width: 20px;
+    height: 20px;
+    margin: 0 auto;
+}
+
+.label-for-checkbox {
+    font-weight: normal;
+}
+
+.table-for-fields-with-path {
+      margin: 30px 0 15px 0;
+}
+
+.check-box-for-choose-fields {
+    display: inline-block;
+    /*width: 25%;*/
+    /*text-align: center;*/
+    width: 20px;
+    float: right;
+}
+
+.first-field, .second-field, .third-field {
+    margin: 0 10px;
+}
+
+.fourth-field {
+    width: 130px;
+    margin: 0;
+}
+
+.table-cell-for-choose-fields {
+    width: 42px;
+}
+
+.fourth-field input {
+    width: 130px;
+    margin: 0;
+}
+
+.field {
+    display: inline-block;
+    width: 50%;
+}
+
+ul {
+    padding-left: 15px;
+}
+
+input[type='submit'], .create-new-map {
+    display: block;
+}
+
+select {
+    margin:10px 0;
+}
+
+ textarea {
+      width: 100%;
+     max-width: 100%;
+}
+
+ .label-created-maps {
+     display: inline;
+     font-weight: normal;
+ }
+
+ .center {
+     text-align: center;
+ }
+
+
+ .enter-or-registration {
+     margin: 20px 0;
+ }
+
+ .table-for-choosing-map {
+     margin-top: 10px;
+ }
+
+ input {
+     display: block;
+ }
+
+ .input-to-center {
+     margin: 20px auto;
+ }
+
+ .link-to-run-page, .link-to-login {
+     text-align: center;
+ }
+
+ .user-name {
+       text-align: right;
+ }
+
+ /*.registration-and-authentications {*/
+     /*width:40%;*/
+ /*}*/

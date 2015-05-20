@@ -1,0 +1,13 @@
+{% extends 'to_center.html' %}
+{% block content %}
+    <h1 class="center">CreateMaps</h1>
+    {% csrf_token %}
+    <div class="link-to-login">
+        <p> Вы вышли из системы
+            <a class="link-to-center">Войти</a>
+        </p>
+    </div>
+    <div class="link-to-run-page">
+        <a class="link-to-center">Стартовая страница</a>
+    </div>
+{% endblock %}

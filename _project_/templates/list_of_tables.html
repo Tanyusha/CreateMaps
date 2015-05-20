@@ -1,0 +1,41 @@
+<div class="errorlist">
+            {% if error %}
+                <div class="alert alert-danger field-errors">
+                    {{ error }}
+                </div>
+            {% endif %}
+        </div>
+        <div class="tables">
+            {% for table in tables %}
+                <div class="table">
+                    <input type="radio" name="table" value="{{ table.name }}" id="{{ table.name }}">
+                    <label class="label-for-radio label-for-radio-tables"
+                           for="{{ table.name }}"> {{ table.name }}</label>
+                </div>
+                <div class="btn-for-table">
+                    <button class="btn btn-info no-border-radius no-margin-top button-for-table non-checked-btn-for-table button"
+                            table-name="{{ table.name }}" data-title="Показать поля таблицы"
+                            id="button-open-for-{{ table.name }}">
+                        <span class="icons glyphicon glyphicon-plus" id="span-for-{{ table.name }}"
+                              aria-hidden="true"></span></button>
+                </div>
+                <div class="btn-for-table">
+                    <button class="btn btn-info no-border-radius no-margin-top button-for-table checked-btn-for-table button"
+                            table-name="{{ table.name }}" data-title="Скрыть поля таблицы"
+                            id="button-close-for-{{ table.name }}">
+                        <span class="icons glyphicon glyphicon-minus" id="span-for-{{ table.name }}"
+                              aria-hidden="true"></span></button>
+                </div>
+                <div class="table_fields">
+                    <p class="p-for-tables" id="p-for-{{ table.name }}">
+                        {% for column in table.columns %}
+                            {% if forloop.last %}
+                                {{ column.name }}
+                            {% else %}
+                                {{ column.name }},
+                            {% endif %}
+                        {% endfor %}
+                    </p>
+                </div>
+            {% endfor %}
+        </div>

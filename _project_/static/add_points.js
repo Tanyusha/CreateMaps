@@ -7,8 +7,9 @@ function init() {
     var myMap = new ymaps.Map("map", {
         center: [56.859852, 62.690396],
         zoom: 10,
-        controls: ['geolocationControl', 'searchControl', 'zoomControl', 'typeSelector']
+        controls: ['geolocationControl',  'zoomControl', 'typeSelector']
     });
+    //'searchControl',
     var objectManager = new ymaps.ObjectManager({
         // Использовать кластеризацию.
         clusterize: true

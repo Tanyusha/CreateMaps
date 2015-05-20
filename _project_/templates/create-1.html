@@ -1,7 +1,8 @@
-{% extends 'create.html' %}
+{% extends 'to_center.html' %}
 {% block content %}
     <form action="{% url 'step1' %}" method="post" enctype="multipart/form-data" class="form-group">
-        <h1>Шаг 1: загрузите файл базы данных</h1>
+        <h1>Публикация данных</h1>
+        <h2>Шаг 1: загрузите источник данных</h2>
 
         <h3>Мы поддерживаем: {% for x in databases %}{{ x }}{% endfor %}</h3>
 
