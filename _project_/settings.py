@@ -41,6 +41,8 @@ INSTALLED_APPS = (
     'django_extensions',
     'debug_toolbar',
     'widget_tweaks',
+    'django.contrib.postgres',
+    'maps',
 
 )
 
@@ -81,13 +83,23 @@ WSGI_APPLICATION = '_project_.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/1.8/ref/settings/#databases
 
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.sqlite3',
+#         'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+#     }
+# }
+
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'NAME': 'createmaps',
+        'USER': 'Tanya',
+        'PASSWORD': 'qwer',
+        'HOST': 'localhost',
+        'PORT': '',
     }
 }
-
 
 # Internationalization
 # https://docs.djangoproject.com/en/1.8/topics/i18n/

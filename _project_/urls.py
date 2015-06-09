@@ -5,6 +5,7 @@ from core.django_form_factory import make_form
 from core.utils import make_inner_paths_for_table
 from django.core.files import File
 from django.core.files.storage import get_storage_class
+from maps.models import Map
 import os
 from core import DATABESE_TYPES
 from django.conf.urls import include, url
@@ -93,14 +94,36 @@ def create_step_2(request):
 
     return render(request, 'create-2.html', {'form': form})
 
-@add_db_to_request
-def create_step_3(request):
-    # if request.method == "POST":
-    #     return render(request, 'create-4.html')
-    return render(request, 'create-3.html')
 
 @add_db_to_request
-def create_step_4(request):
+def create_step_3(request):
+    maps = Map.objects.all()
+    errors = []
+    if request.method == "POST":
+        if 'map' not in request.POST:
+            errors.append('Выберите карту или создайте новую')
+        else:
+            map = request.POST.get('map')
+            if map == 'new':
+                description = request.POST.get('map-description')
+                name = request.POST.get('map-name')
+                m = Map(name=name, description=description)
+                m.save()
+                map = m.id
+
+            map = int(map)
+            request.session["step-3-map-id"] = map
+            return redirect('step3next')
+    return render(request, 'create-3.html', {'maps': maps, 'errors': errors})
+
+
+@add_db_to_request
+def create_step_3_next(request):
+    return render(request, 'create-3-next.html')
+
+
+@add_db_to_request
+def create_step_4_0(request):
     db = request.db
     tables = [x for x in db.tables(TableType.TABLE).values()]
 
@@ -110,9 +133,34 @@ def create_step_4(request):
             request.session["step-4-selected-table"] = request.POST['table']
             return redirect('step5')
         else:
-            error = "Вы не выбрали таблицу с координатами"
-            return render(request, 'create-4.html', {'tables': tables, 'error': error})
-    return render(request, 'create-4.html', {'tables': tables, 'error': error})
+            error = "Вы не выбрали главную таблицу"
+            return render(request, 'create-4-0.html', {'tables': tables, 'error': error})
+
+    return render(request, 'create-4-0.html', {'tables': tables, 'error': error})
+
+
+@add_db_to_request
+def create_step_4_1(request):
+    query = request.session.get('step-4-query', '')
+    db = request.db
+    tables = [x for x in db.tables(TableType.TABLE).values()]
+    errors = []
+    has_next = False
+    if request.method == "POST":
+        query = request.POST.get('query', '')
+        next = request.POST.get('next')
+        if not query:
+            errors.append('Введите запрос')
+        else:
+            try:
+                print(query)
+                result = request.db.execute(query)
+                has_next = True
+            except Exception as e:
+                errors.append(e)
+
+    return render(request, 'create-4-1.html', {'query': query, 'errors': errors, 'tables': tables,
+                                               'has_next': has_next})
 
 
 @add_db_to_request
@@ -169,6 +217,7 @@ def create_step_6(request):
             error = "Вы не выбрали таблицу с основной информацией об объектах"
             return render(request, 'create-5.html', {'tables': tables, 'error': error})
     return render(request, 'create-6.html', {'tables': tables, 'error': error})
+
 
 def cached_db_data(db_filename, selected_table, db):
     cache_key = 'db.paths:' + db_filename + ":" + selected_table
@@ -253,7 +302,9 @@ urlpatterns = [
     url(r'^create-1$', create_step_1, name='step1'),
     url(r'^create-2$', create_step_2, name='step2'),
     url(r'^create-3$', create_step_3, name='step3'),
-    url(r'^create-4$', create_step_4, name='step4'),
+    url(r'^create-3-next$', create_step_3_next, name='step3next'),
+    url(r'^create-4-0$', create_step_4_0, name='step40'),
+    url(r'^create-4-1$', create_step_4_1, name='step41'),
     url(r'^create-5$', create_step_5, name='step5'),
     url(r'^create-6$', create_step_6, name='step6'),
     url(r'^create-7$', create_step_7, name='step7'),

@@ -141,17 +141,28 @@ class MDBDatabase(Database):
         c.close()
         return relations_inner, relations_outer
 
+    def execute(self, sql, args=None):
+        c = make_cursor(self._conn)
+        c.execute(sql, args)
+        rows = c.fetchall()
+        result = []
+        for x in rows:
+            result.append(x)
+            print(x)
+        c.close()
+        return result
+
     def close(self):
         self._conn.close()
 
-    def get_column_type_converter(self, sql_data_type):
-        data_type, converter, buffer_type, buffer_allocator, default_size, variable_length = \
-            pypyodbc.SQL_data_type_dict.get(sql_data_type)
-        return converter
-
-    def get_column_django_model_field(self, sql_data_type):
-        django_field_type = ODBC_TO_DJANGO.get(sql_data_type)
-        return django_field_type
+    # def get_column_type_converter(self, sql_data_type):
+    #     data_type, converter, buffer_type, buffer_allocator, default_size, variable_length = \
+    #         pypyodbc.SQL_data_type_dict.get(sql_data_type)
+    #     return converter
+    #
+    # def get_column_django_model_field(self, sql_data_type):
+    #     django_field_type = ODBC_TO_DJANGO.get(sql_data_type)
+    #     return django_field_type
 
 
 def _get_index(tables, table, table_column):

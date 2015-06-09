@@ -1,5 +1,6 @@
 from core import DATABESE_TYPES
 from django.shortcuts import render, redirect
+from maps.models import Map
 import os
 import functools
 
@@ -23,8 +24,9 @@ def add_db_to_request(fn):
 
         request.db = db = DBase(**init_data)
         request.db_filename = filename
+        map_id = request.session.get('step-3-map-id')
+        request.map = Map.objects.filter(id=map_id) if map_id else None
         response = fn(request, *args, **kwargs)
         db.close()
-
         return response
     return _wrapper

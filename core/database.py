@@ -23,14 +23,14 @@ class Database(object):
     def tables(self, type=None):
         return NotImplemented
 
-    def execute(self, sql, args):
+    def execute(self, sql, args=None):
         raise NotImplementedError
 
     def close(self):
         pass
 
-    def get_column_type_converter(self, column_type):
-        pass
-
-    def get_column_django_model_field(self, column_type):
-        pass
+    # def get_column_type_converter(self, column_type):
+    #     pass
+    #
+    # def get_column_django_model_field(self, column_type):
+    #     pass
