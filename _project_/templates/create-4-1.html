@@ -1,0 +1,33 @@
+{% extends 'to_center.html' %}
+{% block content %}
+    <form action="{% url 'step41' %}" method="post" enctype="multipart/form-data" class="form-group">
+    <h1>Публикация данных</h1>
+        <h2>Шаг 4: введите запрос</h2>
+        {% csrf_token %}
+        {% if errors %}
+            {% for error in errors %}
+            <div class="alert alert-danger field-errors">
+                {{ error }}
+            </div>
+            {% endfor %}
+        {% endif %}
+        <p class="help-block">Для того, чтобы добавить объекты на карту, выберете таблицу, в которой храянтся их координаты</p>
+        <textarea name=query placeholder="запрос к данным">{{ query }}</textarea>
+        <input type="submit" class="btn btn-info no-border-radius" value="выполнить"/>
+        {% if has_next %}
+            <input type="submit" name="next" value="дальше" />
+        {% endif %}
+        <ul>
+        {% for table in tables %}
+            <li>{{ table.name }}</li>
+            <ul>
+            {% for col in table.columns %}
+                <li>{{ col.name }}</li>
+            {% endfor %}
+            </ul>
+        {% endfor %}
+        </ul>
+    </form>
+    <script src="//code.jquery.com/jquery-1.11.2.min.js"></script>
+    <script src="/static/script.js" type="text/javascript"></script>
+{% endblock %}

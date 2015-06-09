@@ -7,7 +7,14 @@
         <p class="help-block">Если вы хотите добавить данные на ранее созданную карту, выберите соответсвующее название карты из списка.</p>
         <p class="help-block">Если вы хотите создать новую карту, отметьте галочкой поле "Создать новую карту"</p>
         {% csrf_token %}
-        <label for="created-maps">Созданные карты:</label>
+        {% if errors %}
+            {% for error in errors %}
+            <div class="alert alert-danger field-errors">
+                {{ error }}
+            </div>
+            {% endfor %}
+        {% endif %}
+        <label for="created-maps">Доступные карты:</label>
         <table class="table-for-choosing-map">
             <tr>
                 <th>Выбрать</th>
@@ -25,11 +32,41 @@
                 <td>Полезные ископаемые Свердловской области</td>
                 <td>Карта содержит информацию о месторождениях Свердловской области</td>
             </tr>
+            {% for map in maps %}
+                <tr>
+                    <td>
+                        <div class="radio-btn-center-in-choose-map">
+                            <input type="radio" name="map" value="{{ map.id }}" id="map-{{ map.id }}">
+                            <label class="label-for-radio label-for-radio-map"
+                                   for="map-{{ map.id }}"> </label>
+                        </div>
+                    </td>
+                    <td>
+                        {{ map.name }}
+                    </td>
+                    <td>
+                        {{ map.description }}
+                    </td>
+                </tr>
+            {% endfor %}
+            <tr>
+                <td>
+                    <div class="radio-btn-center-in-choose-map">
+                        <input type="radio" name="map" value="new" id="map-new">
+                        <label class="label-for-radio label-for-radio-map" for="map-new"></label>
+                    </div>
+                </td>
+                <td>
+                    <input type="text" name="map-name" class="create-new-map" placeholder="Название карты"/>
+                </td>
+                <td>
+                    <textarea name="map-description" class="create-new-map"  placeholder="Описаниие карты"></textarea>
+                </td>
+            </tr>
         </table>
         </br>
-        <input type="checkbox" id="choose-create-new-map"  /><label for="create-new-map">Создать новую карту</label>
-        <input type="text" id="name-of-new-map" class="create-new-map" placeholder="Полезные ископаемые"/>
-        <textarea id="description-of-new-map" class="create-new-map"  placeholder="Описаниие создаваемой карты"></textarea>
+        <p>Задайте название публикуемого набора данных</p>
+        <input type="text" name="dataset-name" class="create-new-map" placeholder="Название набора данных"/>
         <input type="submit" class="btn btn-info no-border-radius" value="Создать"/>
     </form>
 {% endblock %}
