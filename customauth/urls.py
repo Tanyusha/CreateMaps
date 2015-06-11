@@ -1,16 +1,10 @@
-from django import forms
-from django.contrib import auth
 from django.contrib.auth import login, authenticate
-from django.contrib.auth.models import Permission, Group
-from django.contrib.contenttypes.models import ContentType
+from django.contrib.auth.models import Group
 from django.shortcuts import redirect, render
 from customauth.forms import UserCreationForm
-from customauth.models import MyUser
-from maps.models import Map
+from django.conf.urls import patterns, url
 
 __author__ = 'pahaz'
-
-from django.conf.urls import patterns, url
 
 
 def registration(request):

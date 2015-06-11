@@ -450,7 +450,7 @@ def create_step_10(request):
     del request.session[STEP_8_ATTRS]
     del request.session[STEP_3_DATASET]
     del request.session[STEP_3_MAP]
-    return render(request, 'create-10.html', {'map': m})
+    return render(request, 'create-10.html', {'map': map})
 
 
 urlpatterns = [

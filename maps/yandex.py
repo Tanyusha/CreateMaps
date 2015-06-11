@@ -1,9 +1,12 @@
 from __future__ import unicode_literals, print_function, generators, division
+from django.template.defaultfilters import pprint
 
 
-def create_yandex_point_object(point_id, coords, name, **kwargs):
+def create_yandex_point_object(point_id, coords, **kwargs):
+    name = "Объект: {0}".format(point_id)
+    body = pprint(kwargs)
     proper = {
-        "balloonContent": '<h3>' + name + "</h3>",
+        "balloonContent": '<pre>{1}</pre>'.format(name, body),
         "clusterCaption": name,
         "hintContent": "Текст подсказки",
     }
@@ -27,7 +30,7 @@ def create_yandex_poinrs_objects(objs):
         lat = obj['lat']
         lon = obj['lon']
         data = obj['data']
-        p = create_yandex_point_object(i, [lat, lon], '', **data)
+        p = create_yandex_point_object(i, [lat, lon], **data)
         points.append(p)
 
     json_points = {
