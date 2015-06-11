@@ -26,8 +26,8 @@ p, input, span, label, ul {
     /*height: 100%;*/
     /*padding: 0;*/
     /*margin: 0;*/
-    width: 65%;
-    height: 65%;
+    width: 80%;
+    height: 80%;
     border:1px solid #6E6D6D;
     float: right;
 }
@@ -64,8 +64,8 @@ p, input, span, label, ul {
 
 .filters {
     float: left;
-    width: 35%;
-    height: 35%;
+    width: 20%;
+    height: 20%;
 }
 
 .filter {

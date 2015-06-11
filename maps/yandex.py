@@ -4,9 +4,13 @@ from django.template.defaultfilters import pprint
 
 def create_yandex_point_object(point_id, coords, **kwargs):
     name = "Объект: {0}".format(point_id)
-    body = pprint(kwargs)
+    body=""
+    for k,v in sorted(kwargs.items(), key=lambda x: x[0]):
+        info="<p><strong>"+k+": </strong>"+str(v)+"</p>"
+        body = body + info
+    # body = pprint(kwargs)
     proper = {
-        "balloonContent": '<pre>{1}</pre>'.format(name, body),
+        "balloonContent": '{1}'.format(name, body),
         "clusterCaption": name,
         "hintContent": "Текст подсказки",
     }

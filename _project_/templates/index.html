@@ -4,7 +4,11 @@
     <h3 class="center">Добро пожаловать на сервис просмотра и создания
         тематических карт!</h3>
     <div class="enter-or-registration">
-        <h4 class="center">Карты не созданы! Вы можете стать первым!</h4>
+        {% if maps %}
+            {% else %}
+            <h4 class="center">Карты не созданы! Вы можете стать первым!</h4>
+        {% endif %}
+
         {% if user.is_authenticated %}
             <p>Перейти в <a href="{% url "profile" %}">профиль пользователя</a></p>
         {% else %}
@@ -15,6 +19,7 @@
         {% endif %}
     </div>
 
+    {% if maps %}
     <label for="created-maps" class="label-created-maps" class="center">Для
         посмотра созданной карты, выберите
         интересующую вас карту:</label>
@@ -25,12 +30,13 @@
         </tr>
         {% for map in maps %}
             <tr>
-                <td><a>{{ map.name }}</a></td>
+                <td><a href="{% url "map" map.id %}">{{ map.name }}</a></td>
 
                 <td>{{ map.description }}</td>
             </tr>
         {% endfor %}
     </table>
+    {% endif %}
     {#    <div id="maps"></div>#}
     {#    <script language="javascript" type="text/javascript">#}
     {#        "use strict";#}

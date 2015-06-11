@@ -13,7 +13,7 @@
         <table class="table-for-choosing-coord">
             <tr>
                 <th>Атрибут</th>
-                <th>обязательный</th>
+                <th>атрибуты карты</th>
                 <th>фильтрация</th>
             </tr>
             {% for req, filter, index, disable, column in cols %}
@@ -27,9 +27,11 @@
                 <tr>
                     <td>{{ column }}</td>
                     <td>
-                        <input type="checkbox" name="{{ column }}-required"
-                               {% if disable %}disabled {% endif %}{% if req %}checked {% endif %}/>
-
+                        <select>
+                            <option>Название месторождения</option>
+                            <option>Название ОПИ</option>
+                            <option>Название Участка</option>
+                        </select>
                     </td>
                     <td>
                         <input type="checkbox" name="{{ column }}-filter"
