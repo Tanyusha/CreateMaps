@@ -350,3 +350,7 @@ a:hover {
     width:40%;
     margin: 0 auto;
 }
+
+.types .text {
+    margin-left: 20px;
+}

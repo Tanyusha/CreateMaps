@@ -1,15 +1,25 @@
 {% extends 'to_center.html' %}
 {% block content %}
     <form action="{% url 'step4' %}" method="post" enctype="multipart/form-data" class="form-group">
-    <h1>Публикация данных</h1>
+        <h1>Публикация данных</h1>
+
         <h2>Шаг 4: Выберите тип публиуемых объектов</h2>
         {% csrf_token %}
-         <input type="radio" name="type" value="Point" id="Point">
-        <label class="label-for-radio label-for-radio-coords" for="Point">Точка</label>
-        <input type="radio" name="type" value="Line" id="Line">
-        <label class="label-for-radio label-for-radio-coords" for="Line">Ломаная</label>
-        <input type="radio" name="type" value="Polygon" id="Polygon">
-        <label class="label-for-radio label-for-radio-coords" for="Point">Полигон</label>
+        <div class="types">
+            <input type="radio" name="type" value="Point" id="Point">
+            <label class="label-for-radio label-for-radio-coords" for="Point"></label>
+            <label class="text">Точка</label>
+        </div>
+        <div class="types">
+            <input type="radio" name="type" value="Line" id="Line">
+            <label class="label-for-radio label-for-radio-coords" for="Line"></label>
+             <label class="text">Ломаная</label>
+        </div>
+        <div class="types">
+            <input type="radio" name="type" value="Polygon" id="Polygon">
+            <label class="label-for-radio label-for-radio-coords" for="Polygon"></label>
+             <label class="text">Полигон</label>
+        </div>
         <input type="submit" class="btn btn-info no-border-radius" value="Выбрать"/>
     </form>
     <script src="//code.jquery.com/jquery-1.11.2.min.js"></script>
