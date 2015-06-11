@@ -1,4 +1,5 @@
 {% extends 'to_center.html' %}
 {% block content %}
         <h1>Публикация завершена!</h1>
+        <p>Вы можете <a href="{% url "map" map.id %}">перейти на карту</a> или <a href="{% url "profile" %}">вернуться в профиль</a></p>
 {% endblock %}

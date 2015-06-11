@@ -149,33 +149,26 @@ def create_step_3(request):
 
             request.session[STEP_3_MAP] = map.id
             request.session[STEP_3_DATASET] = dataset.id
-            return redirect('step3next')
+            return redirect('step4')
     return render(request, 'create-3.html', {'maps': maps, 'errors': errors})
 
 
 @add_db_to_request
-def create_step_3_next(request):
-    return render(request, 'create-3-next.html')
+def create_step_4(request):
+    if request.method == "POST":
+        if 'type' in request.POST:
+            request.session["step-4-selected-type"] = request.POST['type']
+            return redirect('step5')
+        else:
+            request.session["step-4-selected-type"] = 'POINT'
+            return redirect('step5')
+
+    return render(request, 'create-4.html')
 
 
 @add_db_to_request
-def create_step_4_0(request):
-    db = request.db
-    tables = [x for x in db.tables(TableType.TABLE).values()]
-
-    error = ""
-    if request.method == "POST":
-        if 'table' in request.POST:
-            request.session["step-4-selected-table"] = request.POST['table']
-            return redirect('step5')
-        else:
-            error = "Вы не выбрали главную таблицу"
-            return render(request, 'create-6-b-1.html',
-                          {'tables': tables, 'error': error})
-
-    return render(request, 'create-6-b-1.html',
-                  {'tables': tables, 'error': error})
-
+def create_step_5(request):
+    return render(request, 'create-5.html')
 
 @add_db_to_request
 def create_step_6_a_1(request):
@@ -463,8 +456,8 @@ urlpatterns = [
     url(r'^create-1$', create_step_1, name='step1'),
     url(r'^create-2$', create_step_2, name='step2'),
     url(r'^create-3$', create_step_3, name='step3'),
-    url(r'^create-3-next$', create_step_3_next, name='step3next'),
-    url(r'^create-4-0$', create_step_4_0, name='step40'),
+    url(r'^create-4$', create_step_4, name='step4'),
+    url(r'^create-5$', create_step_5, name='step5'),
     url(r'^create-6-a-1$', create_step_6_a_1, name='step6a1'),
     url(r'^create-6-b-1$', create_step_6_b_1, name='step6b1'),
     url(r'^create-6-b-2$', create_step_6_b_2, name='step6b2'),
@@ -475,8 +468,8 @@ urlpatterns = [
     # url(r'^login$', login, name='login'),
     # url(r'^logout$', logout, name='logout'),
 
-    url(r'^login/$', login, name='login'),
-    url(r'^logout/$', logout, name='logout'),
+    url(r'^login/$', 'django.contrib.auth.views.login', {'template_name': 'admin/login.html'}, name='login'),
+    url(r'^logout/$', 'django.contrib.auth.views.logout', {'template_name': 'registration/logged_out.html'}, name='logout'),
     url(r'^register/$', registration, name='registration'),
 
     url(r'^user/$', user, name='profile'),

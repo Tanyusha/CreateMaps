@@ -147,3 +147,4 @@ MEDIA_URL = '/media/'
 
 AUTH_USER_MODEL = 'customauth.MyUser'
 AUTHENTICATION_BACKENDS = ('django.contrib.auth.backends.ModelBackend',)
+LOGIN_REDIRECT_URL = '/user/'

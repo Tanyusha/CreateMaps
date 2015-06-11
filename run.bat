@@ -1,1 +1,1 @@
-venv\\Scripts\\activate && python manage.py runserver
+__data__\venv\Scripts\activate && python manage.py runserver_plus
