@@ -1,16 +1,19 @@
 import string
+
 from collections import OrderedDict
 from _project_.utils import add_db_to_request
 from core.database import TableType
 from core.django_form_factory import make_form
+from core.load_objects import dumps
 from core.utils import make_inner_paths_for_table
 from customauth.urls import registration
 from django.contrib.auth.decorators import login_required
 from django.core.files import File
 from django.core.files.storage import get_storage_class
-from maps.models import Map, Dataset, Field, MObject
+from maps.models import Map, Dataset, Field
+from maps.utils import dump_map_objs, load_map_objs
+from maps.yandex import create_yandex_poinrs_objects
 import os
-from django.conf import settings
 from core import DATABESE_TYPES
 from django.conf.urls import include, url
 from django.contrib import admin
@@ -18,8 +21,6 @@ from django.shortcuts import render, redirect
 from django import forms
 from django.core.cache import cache
 import random
-from core.load_objects import load_objects, bump_objects
-
 
 STORAGE = get_storage_class()()
 STEP_6_QUERY = 'step-6-query'
@@ -52,19 +53,17 @@ def logout(request):
 def user(request):
     if not request.user.is_authenticated():
         return redirect('index')
-    return render(request, 'user.html',
-                  {'maps': request.user.editable_maps.all()})
+    return render(
+        request, 'user.html',
+        {'maps': request.user.editable_maps.all()}
+    )
 
 
 def map(request, id):
     m = Map.objects.get(id=id)
-    key = "map:{0}".format(m.id)
-    d = cache.get(key)
-    if d is None:
-        d = list(m.mobject_set.all())
-        cache.set(key, d)
-
-    return render(request, 'map.html', {'map': m, 'objects': d})
+    d = load_map_objs(m)
+    y = dumps(create_yandex_poinrs_objects(d))
+    return render(request, 'map.html', {'map': m, 'objects': d, 'yandex': y})
 
 
 @login_required
@@ -352,8 +351,8 @@ def create_step_8(request):
     lon = request.session[STEP_7_LON]
     result, cols = request.db.execute(query)
     selected_table_columns = [x[0] for x in cols]
-    d_attrs = [[0, 0, i, 0, x[0]] for i, x in enumerate(cols)]
-    attrs = request.session.get(STEP_8_ATTRS, d_attrs)
+    attrs = [[0, 0, i, 0, x[0]] for i, x in enumerate(cols)]
+    # attrs = request.session.get(STEP_8_ATTRS, d_attrs)
     REQUIRED = 0
     FILTER = 1
     INDEX = 2
@@ -417,9 +416,7 @@ def create_step_10(request):
 
     result, cols = request.db.execute(query)
     selected_table_columns = [x[0] for x in cols]
-    DATA_FILE = os.path.join(settings.MEDIA_ROOT,
-                             'data{0}.json'.format(map_id))
-    objs = load_objects(DATA_FILE)
+    objs = load_map_objs(map)
 
     for row in result:
         try:
@@ -446,7 +443,7 @@ def create_step_10(request):
         #                            data=data)
         # print(m.id)
 
-    bump_objects(DATA_FILE, objs)
+    dump_map_objs(map, objs)
 
     del request.session[STEP_7_LAT]
     del request.session[STEP_7_LON]

@@ -13,9 +13,6 @@ function init() {
         // Использовать кластеризацию.
         clusterize: true
     });
-    jQuery.getJSON('static/data.json', function (json) {
-        console.log(json);
-        objectManager.add(json);
-    });
     myMap.geoObjects.add(objectManager);
+    objectManager.add(YANDEX_DATA);
 }

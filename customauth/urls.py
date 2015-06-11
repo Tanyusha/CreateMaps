@@ -22,8 +22,9 @@ def registration(request):
         password = form.cleaned_data['password1']
         user = authenticate(username=username, password=password)
         login(request, user)
-        return redirect('admin:index')
+        return redirect('profile')
     return render(request, 'registration.html', {'form': form})
+
 
 urlpatterns = patterns(
     '',

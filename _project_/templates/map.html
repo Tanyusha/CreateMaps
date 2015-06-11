@@ -13,13 +13,10 @@
         <p>{{ map.description }}</p>
 
         <div class="filters">
-            {% for f in map.field_set.all %}
-                {% if f.is_filter %}{{ f.name }}{% endif %}
-            {% endfor %}
 
-            {% for d in objects %}
-                {{ d }}
-            {% endfor %}
+{#            {% for d in objects %}#}
+{#                {{ d }}#}
+{#            {% endfor %}#}
 
             <div class="filter">
                 <label for="year">Год</label>
@@ -45,17 +42,23 @@
                     <option>Базальт</option>
                 </select>
             </div>
+
+        <p>Фильтры:</p>
+            <ul>
+            {% for f in map.field_set.all %}
+                {% if f.is_filter %}<li>{{ f.name }}</li>{% endif %}
+            {% endfor %}
+            </ul>
         </div>
 
         <div id="map"></div>
     </div>
     <script>
         var None = '';
-
-        ymaps.ready(init);
-
         {% autoescape off %}
+        var YANDEX_DATA = {{ yandex }};
         {% endautoescape %}
+        ymaps.ready(init);
     </script>
 
 {% endblock %}
