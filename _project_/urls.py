@@ -171,10 +171,10 @@ def create_step_4_0(request):
             return redirect('step5')
         else:
             error = "Вы не выбрали главную таблицу"
-            return render(request, 'create-4-0.html',
+            return render(request, 'create-6-b-1.html',
                           {'tables': tables, 'error': error})
 
-    return render(request, 'create-4-0.html',
+    return render(request, 'create-6-b-1.html',
                   {'tables': tables, 'error': error})
 
 
@@ -214,10 +214,10 @@ def create_step_6_b_1(request):
     if request.method == "POST":
         if 'table' in request.POST:
             request.session["step-6-selected-table"] = request.POST['table']
-            return redirect('step62')
+            return redirect('step6b2')
         else:
             error = "Вы не выбрали таблицу с основной информацией об объектах"
-            return render(request, 'create-5.html',
+            return render(request, 'create-6-b-1.html',
                           {'tables': tables, 'error': error})
     return render(request, 'create-6-b-1.html',
                   {'tables': tables, 'error': error})
@@ -242,12 +242,12 @@ def cached_db_data(db_filename, selected_table, db):
 def create_step_6_b_2(request):
     selected_table = request.session.get("step-6-selected-table")
     if not selected_table:
-        return redirect('step61')
+        return redirect('step6b1')
 
-    latitude = request.session.get(STEP_7_LAT)
-    longitude = request.session.get(STEP_7_LON)
-    if not latitude or not longitude:
-        return redirect('step3')
+    # latitude = request.session.get(STEP_7_LAT)
+    # longitude = request.session.get(STEP_7_LON)
+    # if not latitude or not longitude:
+    #     return redirect('step3')
 
     db = request.db
     db_filename = request.db_filename
@@ -453,7 +453,7 @@ def create_step_10(request):
     del request.session[STEP_8_ATTRS]
     del request.session[STEP_3_DATASET]
     del request.session[STEP_3_MAP]
-    return render(request, 'create-10.html')
+    return render(request, 'create-10.html', {'map': m})
 
 
 urlpatterns = [

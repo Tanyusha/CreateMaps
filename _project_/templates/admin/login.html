@@ -8,10 +8,12 @@
         {#                    Пожалуйста, введите корректные имя пользователя и пароль. Оба поля могут быть чувствительны к регистру.#}
         {#</div>#}
         {% csrf_token %}
+        <div class="login-and-registration-fields">
         {% include "form.html" with form=form %}
+            </div>
         <input type="submit"
                class="btn btn-info no-border-radius input-to-center"
-               value="Войтй"/>
+               value="Войти"/>
     </form>
     <div class="link-to-run-page">
         <a href="/" class="link-to-center">Стартовая страница</a>

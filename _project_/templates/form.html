@@ -12,12 +12,12 @@
                 {% for error in field.errors %}
                     {{ error }}
                 {% endfor %}
-                <div class="field-input">
+                <div class="field-input input-to-center">
                     {% render_field field placeholder=field.label %}
                 </div>
             </div>
         {% else %}
-            <div class="field-input">
+            <div class="field-input input-to-center">
                 {% render_field field placeholder=field.label %}
             </div>
         {% endif %}
