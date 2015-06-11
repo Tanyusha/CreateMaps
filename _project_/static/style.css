@@ -342,6 +342,10 @@ a {
     cursor: pointer;
 }
 
+a:hover {
+    text-decoration: none;
+}
+
 .login-and-registration-fields {
     width:40%;
     margin: 0 auto;
