@@ -14,7 +14,7 @@ from django.conf.urls import patterns, url
 
 
 def registration(request):
-    form = UserCreationForm(request.POST)
+    form = UserCreationForm(request.POST or None)
     if request.method == "POST" and form.is_valid():
         user = form.save()
         user.groups.add(Group.objects.get(name='user'))
