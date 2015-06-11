@@ -252,12 +252,12 @@ label[for="id_file"] {
     float: right;
 }
 
-.first-field, .second-field, .third-field {
-    margin: 0 10px;
+.first-field {
+    margin: 0 20px;
 }
 
-.fourth-field {
-    width: 130px;
+.second-field {
+    width: 150px;
     margin: 0;
 }
 
@@ -265,7 +265,7 @@ label[for="id_file"] {
     width: 42px;
 }
 
-.fourth-field input {
+.second-field input {
     width: 130px;
     margin: 0;
 }
@@ -332,4 +332,17 @@ select {
 
 .field input {
     width: 100%;
+}
+
+.login-and-registration-fields .field {
+    width:100%
+}
+
+a {
+    cursor: pointer;
+}
+
+.login-and-registration-fields {
+    width:40%;
+    margin: 0 auto;
 }

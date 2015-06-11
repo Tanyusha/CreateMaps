@@ -10,14 +10,14 @@
         <tr>
             <th>Название карты</th>
             <th>Описание</th>
-            <th>Редактировать</th>
+            <th>Администрировать карту</th>
         </tr>
         {% for map in maps %}
             <tr>
                 <td><a href="{% url "map" map.id %}">{{ map.name }}</a></td>
 
                 <td>{{ map.description }}</td>
-                <td>{% ifequal user.id map.user_id %} <a target="popup" onclick="window.open('{% url "admin:maps_map_change" map.id %}?_popup=1','change!','width=900,height=600')" href="{% url "admin:maps_map_change" map.id %}?_popup=1"> *</a>{% endifequal %}</td>
+                <td>{% ifequal user.id map.user_id %} <a target="popup" onclick="window.open('{% url "admin:maps_map_change" map.id %}?_popup=1','change!','width=900,height=600')" href="{% url "admin:maps_map_change" map.id %}?_popup=1">Выбрать</a>{% endifequal %}</td>
             </tr>
         {% endfor %}
     </table>
