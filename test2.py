@@ -1,3 +1,4 @@
+import json
 from collections import OrderedDict
 from pprint import pprint
 from core.database import TableType
@@ -9,12 +10,12 @@ import os
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "_project_.settings")
 
 # ---------------------Подключение к базе данных------------------------
-# db_file = r'C:\Users\Tanika\PycharmProjects\CreateMaps\base.mdb'
-# user = 'admin'
-# password = 'Masterkey1'
-#
-# conn = utils.make_mdb_odbc_connection(db_file, user, password)
-# c = utils.make_cursor(conn)
+db_file = r'C:\Users\Tanika\PycharmProjects\CreateMaps\base.mdb'
+user = 'admin'
+password = 'Masterkey1'
+
+conn = utils.make_mdb_odbc_connection(db_file, user, password)
+c = utils.make_cursor(conn)
 
 # ---------------------Функция преобразования данных в формат, пригодный для наложения на Яндекс.Карту------------------------
 def create_yandex_point_object(point_id, coords, name, lala):
@@ -36,37 +37,38 @@ def create_yandex_point_object(point_id, coords, name, lala):
 
 # ---------------------Считывание данных из базы и формирование объектов для наложения на карту------------------------
 points = []
-# c.execute(
-#     "select ОПИ_Участки.ИДУчастка, ОПИ_Участки.Наименование, ОПИ_Участки.[Координата-широта], ОПИ_Участки.[Координата-долгота] from ОПИ_Участки;")
+c.execute("select ОПИ_Участки.ИДУчастка, ОПИ_Участки.Наименование, "
+          "ОПИ_Участки.[Координата-широта], ОПИ_Участки.[Координата-долгота] "
+          "from ОПИ_Участки;")
 
 
-# for row in rows:
-#     if not row[2] or not row[3]:
-#         continue
-#     name = row[1] if row[1] else ''
-#     coords = [float(row[2].replace(',', '.')), float(row[3].replace(',', '.'))]
-#     id_ = row[0]
-#     if count %2 == 0:
-#         lala = "Tanya"
-#     else:
-#         lala = 'Pasha'
-#     count += 1
-#
-#     point = create_yandex_point_object(id_, coords, name, lala)
-#     points.append(point)
-# # print(points)
-# json_points = {
-#   "type": "FeatureCollection",
-#   "features": points
-# }
-#
-# print(json_points)
+for row in rows:
+    if not row[2] or not row[3]:
+        continue
+    name = row[1] if row[1] else ''
+    coords = [float(row[2].replace(',', '.')), float(row[3].replace(',', '.'))]
+    id_ = row[0]
+    if count % 2 == 0:
+        lala = "Tanya"
+    else:
+        lala = 'Pasha'
+    count += 1
+
+    point = create_yandex_point_object(id_, coords, name, lala)
+    points.append(point)
+# print(points)
+json_points = {
+  "type": "FeatureCollection",
+  "features": points
+}
+
+print(json_points)
 #
 # # ---------------------Создание файла data.json для наложения объектов на карту------------------------
-# json_points = json.dumps(json_points, separators=(',', ':'))
-# f = open('_project_/static/data.json', 'w')
-# f.write(json_points)
-# f.close()
+json_points = json.dumps(json_points, separators=(',', ':'))
+f = open('_project_/static/data.json', 'w')
+f.write(json_points)
+f.close()
 
 types = set()
 

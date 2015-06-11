@@ -1,21 +1,76 @@
 {% extends 'to_center.html' %}
 {% block content %}
     <h1 class="center">CreateMaps</h1>
-    <h3 class="center">Добро пожаловать на сервис просмотра и создания тематических карт!</h3>
+    <h3 class="center">Добро пожаловать на сервис просмотра и создания
+        тематических карт!</h3>
     <div class="enter-or-registration">
-    <h4 class="center">Карты не созданы! Вы можете стать первым!</h4>
-        <p>Для создания новой карты, <a>войдите</a> или <a>зарегестрируйтесь</a></p>
+        <h4 class="center">Карты не созданы! Вы можете стать первым!</h4>
+        {% if user.is_authenticated %}
+            <p>Перейти в <a href="{% url "profile" %}">профиль пользователя</a></p>
+        {% else %}
+            <p>Для создания новой карты, <a
+                    href="{% url "login" %}">войдите</a>
+                или <a href="{% url "registration" %}">зарегестрируйтесь</a>
+            </p>
+        {% endif %}
     </div>
-{#        <label for="created-maps" class="label-created-maps" class="center">Для посмотра созданной карты, выберите#}
-{#            интересующую вас карту:</label>#}
-{#        <table class="table-for-choosing-map">#}
-{#            <tr>#}
-{#                <th>Название карты</th>#}
-{#                <th>Описание</th>#}
-{#            </tr>#}
-{#            <tr>#}
-{#                <td><a>Полезные ископаемые Свердловской области</a></td>#}
-{#                <td>Карта содержит информацию о месторождениях Свердловской области</td>#}
-{#            </tr>#}
-{#        </table>#}
+
+    <label for="created-maps" class="label-created-maps" class="center">Для
+        посмотра созданной карты, выберите
+        интересующую вас карту:</label>
+    <table class="table-for-choosing-map">
+        <tr>
+            <th>Название карты</th>
+            <th>Описание</th>
+        </tr>
+        {% for map in maps %}
+            <tr>
+                <td><a>{{ map.name }}</a></td>
+
+                <td>{{ map.description }}</td>
+            </tr>
+        {% endfor %}
+    </table>
+    {#    <div id="maps"></div>#}
+    {#    <script language="javascript" type="text/javascript">#}
+    {#        "use strict";#}
+
+    {#        var $maps = $('#maps');#}
+    {##}
+    {#        function load_url(url) {#}
+    {#            $.get(url, function(content) {#}
+    {#                var $obj = $(content);#}
+    {#                var $main = $obj.find('#content-main');#}
+    {#                console.log($main);#}
+    {##}
+    {#                $main.find('a').each(function () {#}
+    {#                    var link = this.getAttribute("href");#}
+    {#                    var url_fix = (link.search(/\?/) === -1) ? "?_popup=1" : "&_popup=1";#}
+    {#                    this.setAttribute("href", link + url_fix);#}
+    {#                });#}
+    {##}
+    {#                $maps.html($main);#}
+    {#            });#}
+    {#        }#}
+
+    {#        load_url('/admin/maps/map/?_popup=1');#}
+    {#        function resizeIframe(obj) {#}
+    {#            obj.style.height = obj.contentWindow.document.body.scrollHeight + 'px';#}
+    {#            var $obj = $(obj);#}
+    {#            var $obj_contents = $obj.contents();#}
+    {#            var $main = $obj_contents.find('#content-main');#}
+    {#            $obj_contents.find('body').html($main);#}
+    {#            console.log($main);#}
+    {##}
+    {#            $main.find('a').each(function () {#}
+    {#                var link = this.getAttribute("href");#}
+    {#                var url_fix = (link.search(/\?/) === -1) ? "?_popup=1" : "&_popup=1";#}
+    {#                this.setAttribute("href", link + url_fix);#}
+    {#            });#}
+    {##}
+    {#        }#}
+    {#    </script>#}
+    {#    <iframe width="100%" src="/admin/maps/map/?_popup=1" frameborder="0" scrolling="no"#}
+    {#            onload='javascript:resizeIframe(this);'></iframe>#}
+
 {% endblock %}

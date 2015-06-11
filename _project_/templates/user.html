@@ -1,24 +1,29 @@
 {% extends 'to_center.html' %}
 {% block content %}
      <div class="user-name">
-     <p>Tanika <a>Выйти</a></p>
+     <p>{{ user.username }} <a href="{% url 'logout' %}">Выйти</a></p>
     </div>
         <h1 class="center">CreateMaps</h1>
 
         <label for="created-maps">Карты, с опубликованными мной данными:</label>
-        <table class="table-for-choosing-map">
+    <table class="table-for-choosing-map">
+        <tr>
+            <th>Название карты</th>
+            <th>Описание</th>
+            <th>Редактировать</th>
+        </tr>
+        {% for map in maps %}
             <tr>
-                <th>Название карты</th>
-                <th>Описание</th>
+                <td><a href="{% url "map" map.id %}">{{ map.name }}</a></td>
+
+                <td>{{ map.description }}</td>
+                <td>{% ifequal user.id map.user_id %} <a target="popup" onclick="window.open('{% url "admin:maps_map_change" map.id %}?_popup=1','change!','width=900,height=600')" href="{% url "admin:maps_map_change" map.id %}?_popup=1"> *</a>{% endifequal %}</td>
             </tr>
-            <tr>
-                <td><a>Полезные ископаемые Свердловской области</a></td>
-                <td>Карта содержит информацию о месторождениях Свердловской области</td>
-            </tr>
-        </table>
+        {% endfor %}
+    </table>
         </br>
-        <input type="submit" class="btn btn-info no-border-radius" value="Опубликовать данные"/>
+        <a href="{% url 'step1' %}" class="btn btn-info no-border-radius">Опубликовать данные</a>
     <div class="link-to-run-page">
-    <a>Стартовая страница</a>
+    <a href="{% url 'index' %}">Стартовая страница</a>
     </div>
 {% endblock %}

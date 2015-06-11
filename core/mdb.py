@@ -145,12 +145,7 @@ class MDBDatabase(Database):
         c = make_cursor(self._conn)
         c.execute(sql, args)
         rows = c.fetchall()
-        result = []
-        for x in rows:
-            result.append(x)
-            print(x)
-        c.close()
-        return result
+        return rows, [(x[0], x[1]) for x in c.description]
 
     def close(self):
         self._conn.close()

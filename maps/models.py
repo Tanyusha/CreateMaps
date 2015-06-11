@@ -1,3 +1,4 @@
+from customauth.models import MyUser
 from django.db import models
 
 # from django.contrib.gis.db import models
@@ -11,31 +12,40 @@ TYPES = (
 )
 
 
-class Filter(models.Model):
+class Map(models.Model):
+    user = models.ForeignKey(MyUser, related_name='ownable_maps')
+    editors = models.ManyToManyField(MyUser, related_name='editable_maps', blank=True)
     name = models.CharField(max_length=512)
+    description = models.TextField()
+
+    class Meta:
+        verbose_name = u'карта'
+        verbose_name_plural = u'карты'
 
 
 class Dataset(models.Model):
+    map = models.ForeignKey(Map)
     name = models.CharField(max_length=512)
 
 
 class MObject(models.Model):
-    lon = models.FloatField()
-    lat = models.FloatField()
-    # geom = models.MultiPolygonField(srid=4326)
+    map = models.ForeignKey(Map)
     dataset = models.ForeignKey(Dataset)
+    lon = models.FloatField(null=True, blank=True)
+    lat = models.FloatField(null=True, blank=True)
+    # geom = models.MultiPolygonField(srid=4326)
     type = models.IntegerField(choices=TYPES, default=POINT)
     data = HStoreField()
 
 
-class Map(models.Model):
-    name = models.CharField(max_length=512)
-    description = models.TextField()
-    filters = models.ManyToManyField(Filter)
-    datasets = models.ManyToManyField(Dataset)
-
-
-class Points(models.Model):
+class Point(models.Model):
+    object = models.ForeignKey(MObject)
     lon = models.FloatField()
     lat = models.FloatField()
-    Objects = models.ManyToManyField(MObject)
+
+
+class Field(models.Model):
+    map = models.ForeignKey(Map)
+    name = models.CharField(max_length=512)
+    is_required = models.BooleanField(default=False)
+    is_filter = models.BooleanField(default=False)

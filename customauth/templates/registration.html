@@ -1,12 +1,8 @@
-{% extends 'to_center.html' %}
 {% block content %}
     <form action="{% url 'registration' %}" method="post" enctype="multipart/form-data" class="form-group">
         <h1 class="center">Регистрация</h1>
         {% csrf_token %}
-        {% include "form.html" with form=form %}
+        {{ form }}
         <input type="submit" class="btn btn-info no-border-radius input-to-center" value="Зарегистрироваться"/>
     </form>
-    <div class="link-to-run-page">
-    <a class="link-to-center">Стартовая страница</a>
-    </div>
 {% endblock %}

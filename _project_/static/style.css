@@ -329,3 +329,7 @@ select {
  /*.registration-and-authentications {*/
      /*width:40%;*/
  /*}*/
+
+.field input {
+    width: 100%;
+}

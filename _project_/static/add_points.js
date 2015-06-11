@@ -2,7 +2,6 @@
  * Created by Таника on 19.04.2015.
  */
 
-ymaps.ready(init);
 function init() {
     var myMap = new ymaps.Map("map", {
         center: [56.859852, 62.690396],

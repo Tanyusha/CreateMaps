@@ -15,6 +15,7 @@ import os
 
 PROJECT_DIR = os.path.dirname(os.path.abspath(__file__))
 BASE_DIR = os.path.dirname(PROJECT_DIR)
+DATA_DIR = os.path.join(BASE_DIR, '__data__')
 
 
 # Quick-start development settings - unsuitable for production
@@ -43,7 +44,7 @@ INSTALLED_APPS = (
     'widget_tweaks',
     'django.contrib.postgres',
     'maps',
-
+    'customauth',
 )
 
 MIDDLEWARE_CLASSES = (
@@ -90,14 +91,25 @@ WSGI_APPLICATION = '_project_.wsgi.application'
 #     }
 # }
 
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.postgresql_psycopg2',
+#         'NAME': 'createmaps',
+#         'USER': 'Tanya',
+#         'PASSWORD': 'qwer',
+#         'HOST': 'localhost',
+#         'PORT': '',
+#     }
+# }
+#postgres://eewmudgy:afaK4aM5XOZfu_06TMiqaNDXoURLJ3pR@babar.elephantsql.com:5432/eewmudgy
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'createmaps',
-        'USER': 'Tanya',
-        'PASSWORD': 'qwer',
-        'HOST': 'localhost',
-        'PORT': '',
+        'NAME': 'eewmudgy',
+        'USER': 'eewmudgy',
+        'PASSWORD': 'afaK4aM5XOZfu_06TMiqaNDXoURLJ3pR',
+        'HOST': 'babar.elephantsql.com',
+        'PORT': '5432',
     }
 }
 
@@ -132,3 +144,6 @@ CACHES = {
 
 MEDIA_ROOT = os.path.join(BASE_DIR, '__data__', 'media')
 MEDIA_URL = '/media/'
+
+AUTH_USER_MODEL = 'customauth.MyUser'
+AUTHENTICATION_BACKENDS = ('django.contrib.auth.backends.ModelBackend',)

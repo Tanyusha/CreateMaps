@@ -8,11 +8,19 @@
     <div class="map-content">
         <h1 class="center">CreateMaps</h1>
 
-        <h2>Полезные ископаемые Свердлвоской области</h2>
+        <h2>{{ map.name }}</h2>
 
-        <p>Карта содержит информацию о месторождениях Свердловской области</p>
+        <p>{{ map.description }}</p>
 
         <div class="filters">
+            {% for f in map.field_set.all %}
+                {% if f.is_filter %}{{ f.name }}{% endif %}
+            {% endfor %}
+
+            {% for d in objects %}
+                {{ d }}
+            {% endfor %}
+
             <div class="filter">
                 <label for="year">Год</label>
                 <select name="year" id="year">
@@ -44,8 +52,9 @@
     <script>
         var None = '';
 
+        ymaps.ready(init);
+
         {% autoescape off %}
-            ymaps.ready(init);
         {% endautoescape %}
     </script>
 

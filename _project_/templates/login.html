@@ -1,13 +1,13 @@
 {% extends 'to_center.html' %}
 {% block content %}
-    <form action="{% url 'registration' %}" method="post" enctype="multipart/form-data" class="form-group registration-and-authentications">
+    <form action="{% url 'login' %}" method="post" enctype="multipart/form-data" class="form-group registration-and-authentications">
         <h1 class="center">Вход</h1>
         {% csrf_token %}
 {#        <div class="alert alert-danger field-errors">#}
 {#                    Пожалуйста, введите корректные имя пользователя и пароль. Оба поля могут быть чувствительны к регистру.#}
 {#</div>#}
-        <input class="input-to-center" type="text" placeholder="Пользователь"/>
-        <input class="input-to-center"  type="password" placeholder="Пароль"/>
+        <input class="input-to-center" name="username" type="text" placeholder="Пользователь"/>
+        <input class="input-to-center" name="password" type="password" placeholder="Пароль"/>
         <input type="submit" class="btn btn-info no-border-radius input-to-center" value="Войтй"/>
     </form>
         <div class="link-to-run-page">

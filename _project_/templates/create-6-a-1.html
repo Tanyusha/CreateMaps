@@ -1,8 +1,8 @@
 {% extends 'to_center.html' %}
 {% block content %}
-    <form action="{% url 'step41' %}" method="post" enctype="multipart/form-data" class="form-group">
+    <form action="{% url 'step6a1' %}" method="post" enctype="multipart/form-data" class="form-group">
     <h1>Публикация данных</h1>
-        <h2>Шаг 4: введите запрос</h2>
+        <h2>Шаг 6: введите запрос</h2>
         {% csrf_token %}
         {% if errors %}
             {% for error in errors %}
@@ -14,9 +14,16 @@
         <p class="help-block">Для того, чтобы добавить объекты на карту, выберете таблицу, в которой храянтся их координаты</p>
         <textarea name=query placeholder="запрос к данным">{{ query }}</textarea>
         <input type="submit" class="btn btn-info no-border-radius" value="выполнить"/>
+        <br>
         {% if has_next %}
-            <input type="submit" name="next" value="дальше" />
+            <a class="btn btn-info no-border-radius" href="{% url "step7" %}" name="next">дальше ({{ results }} объектов)</a>
         {% endif %}
+
+        <ul>
+            {% for x in cols %}
+            <li>{{ x.0 }}</li>
+            {% endfor %}
+        </ul>
         <ul>
         {% for table in tables %}
             <li>{{ table.name }}</li>

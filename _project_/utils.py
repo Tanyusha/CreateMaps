@@ -8,6 +8,9 @@ import functools
 def add_db_to_request(fn):
     @functools.wraps(fn)
     def _wrapper(request, *args, **kwargs):
+        if not request.user.is_authenticated():
+            return render(request, 'error-user-is-not-authenticated.html')
+
         path = request.session.get('step-1-filepath')
         filename = os.path.basename(path)
 
