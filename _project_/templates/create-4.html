@@ -3,7 +3,7 @@
     <form action="{% url 'step4' %}" method="post" enctype="multipart/form-data" class="form-group">
         <h1>Публикация данных</h1>
 
-        <h2>Шаг 4: Выберите тип публиуемых объектов</h2>
+        <h2>Шаг 4: Выберите тип публикуемых объектов</h2>
         {% csrf_token %}
         <div class="types">
             <input type="radio" name="type" value="Point" id="Point">

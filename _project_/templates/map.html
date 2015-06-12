@@ -14,9 +14,9 @@
 
         <div class="filters">
 
-{#            {% for d in objects %}#}
-{#                {{ d }}#}
-{#            {% endfor %}#}
+            {#            {% for d in objects %}#}
+            {#                {{ d }}#}
+            {#            {% endfor %}#}
 
             <div class="filter">
                 <label for="year">Год</label>
@@ -43,23 +43,27 @@
                 </select>
             </div>
 
-        <p>Фильтры:</p>
+            <p>Фильтры:</p>
             <ul>
-            {% for f in map.field_set.all %}
-                {% if f.is_filter %}<li>{{ f.name }}</li>{% endif %}
-            {% endfor %}
+                {% for f in map.field_set.all %}
+                    {% if f.is_filter %}
+                        <li>{{ f.name }}</li>{% endif %}
+                {% endfor %}
             </ul>
         </div>
 
         <div id="map"></div>
+
     </div>
+            <div class="link-to-run-page">
+            <a href="/" class="link-to-center">Стартовая страница</a>
+        </div>
     <script>
         var None = '';
         {% autoescape off %}
-        var YANDEX_DATA = {{ yandex }};
+            var YANDEX_DATA = {{ yandex }};
         {% endautoescape %}
         ymaps.ready(init);
     </script>
-
 {% endblock %}
 
