@@ -1,0 +1,33 @@
+{% extends 'to_center.html' %}
+{% block content %}
+    <form action="{% url 'step7' %}" method="post" enctype="multipart/form-data" class="form-group">
+    <h1>Публикация данных</h1>
+        <h2>Шаг 7: укажите поле с идентификатором объекта</h2>
+        {% csrf_token %}
+        {% if form.errors %}
+            {% for field in form %}
+                <div class="alert alert-danger field-errors">
+                    {{ field.errors|striptags }}</div>
+            {% endfor %}
+        {% endif %}
+        <table class="table-for-choosing-coord">
+            <tr>
+                <th>Поля таблицы</th>
+                <th>ID</th>
+            </tr>
+            {% for column in cols %}
+                <tr>
+                    <td>{{ column }}</td>
+                    <td>
+                        <div class="radio-btn-center-in-table">
+                        <input type="radio" name="id" value="{{ column }}" id="coord-X-for-{{ column }}">
+                        <label class="label-for-radio label-for-radio-coords" for="coord-X-for-{{ column }}"> </label>
+                        </div>
+                    </td>
+                </tr>
+            {% endfor %}
+        </table>
+        {% csrf_token %}
+        <input type="submit" class="btn btn-info no-border-radius" value="Выбрать"/>
+    </form>
+{% endblock %}

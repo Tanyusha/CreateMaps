@@ -45,6 +45,8 @@ INSTALLED_APPS = (
     'django.contrib.postgres',
     'maps',
     'customauth',
+    'attrs',
+    '_project_',
 )
 
 MIDDLEWARE_CLASSES = (
@@ -84,12 +86,12 @@ WSGI_APPLICATION = '_project_.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/1.8/ref/settings/#databases
 
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.sqlite3',
-#         'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
-#     }
-# }
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+    }
+}
 
 # DATABASES = {
 #     'default': {
@@ -102,16 +104,16 @@ WSGI_APPLICATION = '_project_.wsgi.application'
 #     }
 # }
 #postgres://eewmudgy:afaK4aM5XOZfu_06TMiqaNDXoURLJ3pR@babar.elephantsql.com:5432/eewmudgy
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'eewmudgy',
-        'USER': 'eewmudgy',
-        'PASSWORD': 'afaK4aM5XOZfu_06TMiqaNDXoURLJ3pR',
-        'HOST': 'babar.elephantsql.com',
-        'PORT': '5432',
-    }
-}
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.postgresql_psycopg2',
+#         'NAME': 'eewmudgy',
+#         'USER': 'eewmudgy',
+#         'PASSWORD': 'afaK4aM5XOZfu_06TMiqaNDXoURLJ3pR',
+#         'HOST': 'babar.elephantsql.com',
+#         'PORT': '5432',
+#     }
+# }
 
 # Internationalization
 # https://docs.djangoproject.com/en/1.8/topics/i18n/
@@ -148,3 +150,4 @@ MEDIA_URL = '/media/'
 AUTH_USER_MODEL = 'customauth.MyUser'
 AUTHENTICATION_BACKENDS = ('django.contrib.auth.backends.ModelBackend',)
 LOGIN_REDIRECT_URL = '/user/'
+LOGIN_URL = '/login/'

@@ -23,18 +23,19 @@
                 {#    INDEX = 2#}
                 {#    DISABLED = 3#}
                 {#    NAME = 4#}
-
+{% if not disable %}
                 <tr>
                     <td>{{ column }}</td>
                     <td>
                         <input type="checkbox" name="{{ column }}-required"
-                               {% if disable %}disabled {% endif %}{% if req %}checked {% endif %}/>
+                               {% if req %}checked {% endif %}/>
                     </td>
                     <td>
                         <input type="checkbox" name="{{ column }}-filter"
-                               {% if disable %}disabled {% endif %}{% if filter %}checked {% endif %}/>
+                               {% if filter %}checked {% endif %}/>
                     </td>
                 </tr>
+ {% endif %}
             {% endfor %}
         </table>
         {% csrf_token %}

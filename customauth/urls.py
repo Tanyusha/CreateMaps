@@ -11,7 +11,13 @@ def registration(request):
     form = UserCreationForm(request.POST or None)
     if request.method == "POST" and form.is_valid():
         user = form.save()
-        user.groups.add(Group.objects.get(name='user'))
+        try:
+            g = Group.objects.get(name='user')
+        except Group.DoesNotExist:
+            import init_db
+            g = Group.objects.get(name='user')
+
+        user.groups.add()
         username = form.cleaned_data['username']
         password = form.cleaned_data['password1']
         user = authenticate(username=username, password=password)

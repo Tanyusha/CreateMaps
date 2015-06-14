@@ -1,0 +1,39 @@
+{% extends 'to_center.html' %}
+{% block content %}
+    <form action="{% url 'step6a1' %}" method="post" enctype="multipart/form-data" class="form-group">
+    <h1>Публикация данных</h1>
+        <h2>Шаг 7: введите запрос для координат полигона</h2>
+        {% csrf_token %}
+        {% if form.errors %}
+            {% for field in form %}
+                <div class="alert alert-danger field-errors">
+                    {{ field.errors|striptags }}</div>
+            {% endfor %}
+        {% endif %}
+        <p class="help-block">Напишите запрос к вашему источнику данных, который будет извлекать точки полигона для каждого объекта. Используйте перменную ID для </p>
+        <textarea name=query placeholder="запрос к данным">{{ form.query }}</textarea>
+        <input type="submit" class="btn btn-info no-border-radius" value="выполнить"/>
+        <br>
+        {% if has_next %}
+            <a class="btn btn-info no-border-radius" href="{% url "step8" %}" name="next">дальше</a>
+        {% endif %}
+
+        <ul>
+            {% for x in cols %}
+            <li>{{ x.0 }}</li>
+            {% endfor %}
+        </ul>
+        <ul>
+        {% for table in tables %}
+            <li>{{ table.name }}</li>
+            <ul>
+            {% for col in table.columns %}
+                <li>{{ col.name }}</li>
+            {% endfor %}
+            </ul>
+        {% endfor %}
+        </ul>
+    </form>
+    <script src="//code.jquery.com/jquery-1.11.2.min.js"></script>
+    <script src="/static/script.js" type="text/javascript"></script>
+{% endblock %}

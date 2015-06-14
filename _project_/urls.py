@@ -1,7 +1,12 @@
 import string
+from _project_.consts import STEP_1_FILEPATH, STEP_2_DATABASE_INIT_DATA, \
+    STEP_3_MAP, STEP_3_DATASET, STEP_4_TYPE, STEP_6_QUERY, \
+    REDIRECT_IF_NO_QUERY, \
+    STEP_7_LAT, STEP_7_LON, STEP_8_ATTRS
+from attrs.models import set_obj_attrs, prefetch_related_attrs
 
-from collections import OrderedDict
-from _project_.utils import add_db_to_request
+from collections import OrderedDict, namedtuple
+from _project_.utils import add_db_to_request, generate_random_string
 from core.database import TableType
 from core.django_form_factory import make_form
 from core.load_objects import dumps
@@ -10,9 +15,10 @@ from customauth.urls import registration
 from django.contrib.auth.decorators import login_required
 from django.core.files import File
 from django.core.files.storage import get_storage_class
-from maps.models import Map, Dataset, Field
+from maps.models import Map, Dataset, Field, MObject, Point
 from maps.utils import dump_map_objs, load_map_objs
 from maps.yandex import create_yandex_poinrs_objects
+import operator
 import os
 from core import DATABESE_TYPES
 from django.conf.urls import include, url
@@ -23,13 +29,16 @@ from django.core.cache import cache
 import random
 
 STORAGE = get_storage_class()()
-STEP_6_QUERY = 'step-6-query'
-STEP_7_LAT = "step-7-latitude-column"
-STEP_7_LON = "step-7-longitude-column"
-REDIRECT_IF_NO_QUERY = 'step3'
-STEP_8_ATTRS = 'step-8-attrs'
-STEP_3_MAP = "step-3-map-id"
-STEP_3_DATASET = "step-3-dataset-id"
+
+TYPE_POINT = 0
+TYPE_LINE = 1
+TYPE_POLYGON = 2
+TYPES = (
+    ('Point', TYPE_POINT),
+    ('Line', TYPE_LINE),
+    ('Polygon', TYPE_POLYGON),
+)
+TYPES_dict = dict(TYPES)
 
 
 class UploadFile(forms.Form):
@@ -62,7 +71,10 @@ def user(request):
 def map(request, id):
     m = Map.objects.get(id=id)
     d = load_map_objs(m)
-    y = dumps(create_yandex_poinrs_objects(d))
+    y = prefetch_related_attrs(m.mobjects.all())
+    y = dumps(create_yandex_poinrs_objects(y, operator.attrgetter('lat'),
+                                           operator.attrgetter('lon'),
+                                           operator.attrgetter('data')))
     return render(request, 'map.html', {'map': m, 'objects': d, 'yandex': y})
 
 
@@ -74,7 +86,7 @@ def create_step_1(request):
             f = form.cleaned_data['file']
             ff = File(f, f.name)
             path = STORAGE.save(f.name, ff)
-            request.session['step-1-filepath'] = path
+            request.session[STEP_1_FILEPATH] = path
             return redirect('step2')
     else:
         form = UploadFile()
@@ -84,7 +96,7 @@ def create_step_1(request):
 
 @login_required
 def create_step_2(request):
-    path = request.session.get('step-1-filepath')
+    path = request.session.get(STEP_1_FILEPATH)
     path = STORAGE.path(path)
     name = os.path.basename(path)
 
@@ -106,8 +118,8 @@ def create_step_2(request):
                 data = form.cleaned_data
                 db = DBase(**data)
                 db.close()
-                request.session['step-2-database-init-data'] = data
-                request.session['step-2-database'] = ext
+                request.session[STEP_2_DATABASE_INIT_DATA] = data
+                # request.session['step-2-database'] = ext
             except Exception as e:
                 form.add_error(None, str(e))
             else:
@@ -139,8 +151,7 @@ def create_step_3(request):
                 map = Map.objects.get(id=int(map))
 
             if not request.POST.get('dataset-name'):
-                dataset_name = ''.join([random.choice(string.hexdigits)
-                                        for _ in range(10)])
+                dataset_name = generate_random_string(10)
             else:
                 dataset_name = request.POST['dataset-name']
 
@@ -153,22 +164,23 @@ def create_step_3(request):
     return render(request, 'create-3.html', {'maps': maps, 'errors': errors})
 
 
+class TypeForm(forms.Form):
+    type = forms.ChoiceField(choices=TYPES)
+
+
 @add_db_to_request
 def create_step_4(request):
-    if request.method == "POST":
-        if 'type' in request.POST:
-            request.session["step-4-selected-type"] = request.POST['type']
-            return redirect('step5')
-        else:
-            request.session["step-4-selected-type"] = 'POINT'
-            return redirect('step5')
-
-    return render(request, 'create-4.html')
+    form = TypeForm(request.POST or None)
+    if request.method == "POST" and form.is_valid():
+        request.session[STEP_4_TYPE] = TYPES_dict[form.cleaned_data['type']]
+        return redirect('step5')
+    return render(request, 'create-4.html', {'form': form})
 
 
 @add_db_to_request
 def create_step_5(request):
     return render(request, 'create-5.html')
+
 
 @add_db_to_request
 def create_step_6_a_1(request):
@@ -180,7 +192,6 @@ def create_step_6_a_1(request):
     has_next = False
     if request.method == "POST":
         query = request.POST.get('query', '')
-        next = request.POST.get('next')
         if not query:
             errors.append('Введите запрос')
         else:
@@ -293,8 +304,79 @@ def create_step_6_b_2(request):
     })
 
 
-@add_db_to_request
 def create_step_7(request):
+    type = request.session[STEP_4_TYPE]
+    request.session.modified = True
+    if type == TYPE_POINT:
+        return create_step_7_point(request)
+    elif type == TYPE_POLYGON:
+        return create_step_7_polygon_1(request)
+    return redirect('step4')
+
+
+class SelectIdForm(forms.Form):
+    id = forms.IntegerField()
+
+    def __init__(self, choices, **kwargs):
+        self.choices = choices
+        super(SelectIdForm, self).__init__(kwargs)
+
+    def clean_id(self):
+        id = self.cleaned_data['id']
+        if id not in self.choices:
+            raise forms.ValidationError('неизвестное поле')
+        return id
+
+
+@add_db_to_request
+def create_step_7_polygon_1(request):
+    query = request.session.get(STEP_6_QUERY)
+    if not query:
+        return redirect(REDIRECT_IF_NO_QUERY)
+
+    rows, columns = request.db.execute(query)
+    table_columns = [x[0] for x in columns]
+    form = SelectIdForm(table_columns, request.POST or None)
+    if request.method == "POST" and form.is_valid():
+        id = form.cleaned_data['id']
+
+    return render(request, 'create-7-polygon-1.html',
+                  {'cols': table_columns, 'form': form})
+
+
+class QueryForm(forms.Form):
+    query = forms.CharField(max_length=1024 * 4)
+
+    def __init__(self, db, **kwargs):
+        self.db = db
+        super(QueryForm, self).__init__(**kwargs)
+
+    def clean_query(self):
+        query = self.cleaned_data["query"]
+
+        try:
+            result, cols = self.db.execute(query)
+        except Exception as e:
+            raise forms.ValidationError(str(e))
+
+        return query
+
+
+@add_db_to_request
+def create_step_7_polygon_2(request):
+    form = QueryForm(request.db, request.POST or None)
+    has_next = False
+    if request.POST and form.is_valid():
+        query = form.cleaned_data['query']
+        has_next = True
+        print(query)
+
+    return render(request, 'create-7-polygon.html',
+                  {'form': form, 'has_next': has_next})
+
+
+@add_db_to_request
+def create_step_7_point(request):
     query = request.session.get(STEP_6_QUERY)
     if not query:
         return redirect(REDIRECT_IF_NO_QUERY)
@@ -329,7 +411,7 @@ def create_step_7(request):
             else:
                 error = "Вы не указали координаты объектов"
 
-    return render(request, 'create-7.html',
+    return render(request, 'create-7-point.html',
                   {'cols': selected_table_columns, 'error': error,
                    'lat': lat, 'lon': lon})
 
@@ -340,8 +422,6 @@ def create_step_8(request):
     if not query:
         return redirect(REDIRECT_IF_NO_QUERY)
 
-    lat = request.session[STEP_7_LAT]
-    lon = request.session[STEP_7_LON]
     result, cols = request.db.execute(query)
     selected_table_columns = [x[0] for x in cols]
     attrs = [[0, 0, i, 0, x[0]] for i, x in enumerate(cols)]
@@ -352,6 +432,8 @@ def create_step_8(request):
     DISABLED = 3
     NAME = 4
 
+    lat = request.session[STEP_7_LAT]
+    lon = request.session[STEP_7_LON]
     attrs[lat][DISABLED] = 1
     attrs[lat][FILTER] = 1
     attrs[lat][REQUIRED] = 1
@@ -378,6 +460,8 @@ def create_step_8(request):
             dataset_id = request.session[STEP_3_DATASET]
             map = Map.objects.get(id=map_id)
             for req, filter, index, disable, name in attrs:
+                if disable:
+                    continue
                 f = Field(map=map, name=name, is_required=req,
                           is_filter=filter)
                 f.save()
@@ -394,55 +478,80 @@ def create_9(request):
     return render(request, 'create-9.html')
 
 
+def _create_10_set_coordinates(row, type, request):
+    lat = lon = None
+    points = []
+    if type == TYPE_POINT:
+        lat = request.session[STEP_7_LAT]
+        lon = request.session[STEP_7_LON]
+
+        try:
+            lon = float(row[lon])
+        except:
+            lon = None
+        try:
+            lat = float(row[lat])
+        except:
+            lat = None
+    else:
+        points = [(lat, lon)]
+        raise NotImplementedError()
+
+    return lat, lon, points
+
+
+def _create_10_set_data(row, type, request, selected_table_columns):
+    data = {}
+    if type == TYPE_POINT:
+        lat = request.session[STEP_7_LAT]
+        lon = request.session[STEP_7_LON]
+
+        for i, v in enumerate(row):
+            if i in [lat, lon]:
+                continue
+            data[selected_table_columns[i]] = v
+    else:
+        raise NotImplementedError()
+
+    return data
+
+
 @add_db_to_request
 def create_step_10(request):
     query = request.session.get(STEP_6_QUERY)
     if not query:
         return redirect(REDIRECT_IF_NO_QUERY)
 
-    lat = request.session[STEP_7_LAT]
-    lon = request.session[STEP_7_LON]
     map_id = request.session[STEP_3_MAP]
     dataset_id = request.session[STEP_3_DATASET]
+    type = request.session[STEP_4_TYPE]
     map = Map.objects.get(id=map_id)
     dataset = Dataset.objects.get(id=dataset_id)
-
     result, cols = request.db.execute(query)
     selected_table_columns = [x[0] for x in cols]
-    objs = load_map_objs(map)
+    # objs = load_map_objs(map)
 
     for row in result:
-        try:
-            longitude = float(row[lon])
-        except:
-            longitude = None
-        try:
-            latitude = float(row[lat])
-        except:
-            latitude = None
-        data = {}
+        lat, lon, points = _create_10_set_coordinates(row, type, request)
+        data = _create_10_set_data(row, type, request, selected_table_columns)
 
-        for i, v in enumerate(row):
-            if i in [lat, lon]:
-                continue
-            data[selected_table_columns[i]] = v
+        m = MObject.objects.create(map=map, dataset=dataset, type=type,
+                                   lon=lon, lat=lat)
+        for point in points:
+            m.points.add(Point.objects.create(lat=point[0], lon=point[1]))
 
-        d = {'lat': latitude, 'lon': longitude, 'data': data}
-        objs.append(d)
+        set_obj_attrs(m, data)
 
-        # m = MObject.objects.create(map=map, dataset=dataset,
-        #                            lon=longitude,
-        #                            lat=latitude,
-        #                            data=data)
-        # print(m.id)
+        print(m.id)
 
-    dump_map_objs(map, objs)
+    # dump_map_objs(map, objs)
 
-    del request.session[STEP_7_LAT]
-    del request.session[STEP_7_LON]
+    del request.session[STEP_1_FILEPATH]
+    del request.session[STEP_2_DATABASE_INIT_DATA]
     del request.session[STEP_8_ATTRS]
     del request.session[STEP_3_DATASET]
     del request.session[STEP_3_MAP]
+    del request.session[STEP_4_TYPE]
     return render(request, 'create-10.html', {'map': map})
 
 
@@ -468,8 +577,10 @@ urlpatterns = [
     # url(r'^login$', login, name='login'),
     # url(r'^logout$', logout, name='logout'),
 
-    url(r'^login/$', 'django.contrib.auth.views.login', {'template_name': 'admin/login.html'}, name='login'),
-    url(r'^logout/$', 'django.contrib.auth.views.logout', {'template_name': 'registration/logged_out.html'}, name='logout'),
+    url(r'^login/$', 'django.contrib.auth.views.login',
+        {'template_name': 'admin/login.html'}, name='login'),
+    url(r'^logout/$', 'django.contrib.auth.views.logout',
+        {'template_name': 'registration/logged_out.html'}, name='logout'),
     url(r'^register/$', registration, name='registration'),
 
     url(r'^user/$', user, name='profile'),
