@@ -21,17 +21,17 @@
                 <th>Название карты</th>
                 <th>Описание</th>
             </tr>
-            <tr>
-                <td>
-                    <div class="radio-btn-center-in-choose-map">
-                        <input type="radio" name="map" value="{{ column.name }}" id="map-{{ column.name }}">
-                        <label class="label-for-radio label-for-radio-map"
-                               for="map-{{ column.name }}"> </label>
-                    </div>
-                </td>
-                <td>Полезные ископаемые Свердловской области</td>
-                <td>Карта содержит информацию о месторождениях Свердловской области</td>
-            </tr>
+{#            <tr>#}
+{#                <td>#}
+{#                    <div class="radio-btn-center-in-choose-map">#}
+{#                        <input type="radio" name="map" value="{{ column.name }}" id="map-{{ column.name }}">#}
+{#                        <label class="label-for-radio label-for-radio-map"#}
+{#                               for="map-{{ column.name }}"> </label>#}
+{#                    </div>#}
+{#                </td>#}
+{#                <td>Полезные ископаемые Свердловской области</td>#}
+{#                <td>Карта содержит информацию о месторождениях Свердловской области</td>#}
+{#            </tr>#}
             {% for map in maps %}
                 <tr>
                     <td>

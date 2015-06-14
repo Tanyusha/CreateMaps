@@ -1,29 +1,34 @@
 {% extends 'to_center.html' %}
 {% block content %}
-     <div class="user-name">
-     <p>{{ user.username }} <a href="{% url 'logout' %}">Выйти</a></p>
+    <div class="user-name">
+        <p>{{ user.username }} <a href="{% url 'logout' %}">Выйти</a></p>
     </div>
-        <h1 class="center">CreateMaps</h1>
+    <h1 class="center">CreateMaps</h1>
 
+    {% if maps %}
         <label for="created-maps">Карты, с опубликованными мной данными:</label>
-    <table class="table-for-choosing-map">
-        <tr>
-            <th>Название карты</th>
-            <th>Описание</th>
-            <th>Администрировать карту</th>
-        </tr>
-        {% for map in maps %}
+        <table class="table-for-choosing-map">
             <tr>
-                <td><a href="{% url "map" map.id %}">{{ map.name }}</a></td>
-
-                <td>{{ map.description }}</td>
-                <td>{% ifequal user.id map.user_id %} <a target="popup" onclick="window.open('{% url "admin:maps_map_change" map.id %}?_popup=1','change!','width=900,height=600')" href="{% url "admin:maps_map_change" map.id %}?_popup=1">Выбрать</a>{% endifequal %}</td>
+                <th>Название карты</th>
+                <th>Описание</th>
+                <th>Администрировать карту</th>
             </tr>
-        {% endfor %}
-    </table>
-        </br>
-        <a href="{% url 'step1' %}" class="btn btn-info no-border-radius">Опубликовать данные</a>
+            {% for map in maps %}
+                <tr>
+                    <td><a href="{% url "map" map.id %}">{{ map.name }}</a></td>
+
+                    <td>{{ map.description }}</td>
+                    <td>{% ifequal user.id map.user_id %}<a target="popup"
+                                                            onclick="window.open('{% url "admin:maps_map_change" map.id %}?_popup=1','change!','width=900,height=600')"
+                                                            href="{% url "admin:maps_map_change" map.id %}?_popup=1">Выбрать</a>{% endifequal %}
+                    </td>
+                </tr>
+            {% endfor %}
+        </table>
+    {% endif %}
+    </br>
+    <a href="{% url 'step1' %}" class="btn btn-info no-border-radius">Опубликовать данные</a>
     <div class="link-to-run-page">
-    <a href="{% url 'index' %}">Стартовая страница</a>
+        <a href="{% url 'index' %}">Стартовая страница</a>
     </div>
 {% endblock %}

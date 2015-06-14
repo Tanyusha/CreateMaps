@@ -1,0 +1,47 @@
+{% extends 'to_center.html' %}
+{% block content %}
+    <form action="{% url 'step8' %}" method="post"
+          enctype="multipart/form-data" class="form-group">
+        <h1>Публикация данных</h1>
+
+        <h2>Шаг 8: Задайте семантические атрибуты объектов</h2>
+        {% if error %}
+            <div class="alert alert-danger field-errors">
+                {{ error }}
+            </div>
+        {% endif %}
+        <table class="table-for-choosing-coord">
+            <tr>
+                <th>Атрибут</th>
+                <th>атрибуты карты</th>
+                <th>фильтрация</th>
+            </tr>
+            {% for req, filter, index, disable, column in cols %}
+
+                {#    REQUIRED = 0#}
+                {#    FILTER = 1#}
+                {#    INDEX = 2#}
+                {#    DISABLED = 3#}
+                {#    NAME = 4#}
+
+                <tr>
+                    <td>{{ column }}</td>
+                    <td>
+                        <select>
+                            <option>Название месторождения</option>
+                            <option>Название ОПИ</option>
+                            <option>Название Участка</option>
+                        </select>
+                    </td>
+                    <td>
+                        <input type="checkbox" name="{{ column }}-filter"
+                               {% if disable %}disabled {% endif %}{% if filter %}checked {% endif %}/>
+                    </td>
+                </tr>
+            {% endfor %}
+        </table>
+        {% csrf_token %}
+        <input type="submit" class="btn btn-info no-border-radius"
+               value="Выбрать"/>
+    </form>
+{% endblock %}

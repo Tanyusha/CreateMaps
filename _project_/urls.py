@@ -474,6 +474,60 @@ def create_step_8(request):
 
 
 @add_db_to_request
+def create_step_8_old(request):
+    query = request.session.get(STEP_6_QUERY)
+    if not query:
+        return redirect(REDIRECT_IF_NO_QUERY)
+
+    lat = request.session[STEP_7_LAT]
+    lon = request.session[STEP_7_LON]
+    result, cols = request.db.execute(query)
+    selected_table_columns = [x[0] for x in cols]
+    attrs = [[0, 0, i, 0, x[0]] for i, x in enumerate(cols)]
+    # attrs = request.session.get(STEP_8_ATTRS, d_attrs)
+    REQUIRED = 0
+    FILTER = 1
+    INDEX = 2
+    DISABLED = 3
+    NAME = 4
+
+    attrs[lat][DISABLED] = 1
+    attrs[lat][FILTER] = 1
+    attrs[lat][REQUIRED] = 1
+    attrs[lon][DISABLED] = 1
+    attrs[lon][FILTER] = 1
+    attrs[lon][REQUIRED] = 1
+
+    error = []
+    if request.method == "POST":
+        for key, value in request.POST.items():
+            value = True if value == 'on' else False
+            if key.endswith('-filter'):
+                key = key[:-len('-filter')]
+                attrs[selected_table_columns.index(key)][
+                    FILTER] = 1 if value else 0
+            elif key.endswith('-required'):
+                key = key[:-len('-required')]
+                attrs[selected_table_columns.index(key)][
+                    REQUIRED] = 1 if value else 0
+
+        if not error:
+            request.session[STEP_8_ATTRS] = attrs
+            map_id = request.session[STEP_3_MAP]
+            dataset_id = request.session[STEP_3_DATASET]
+            map = Map.objects.get(id=map_id)
+            for req, filter, index, disable, name in attrs:
+                f = Field(map=map, name=name, is_required=req,
+                          is_filter=filter)
+                f.save()
+
+            return redirect('step10')
+
+    return render(request, 'create-8-old.html',
+                  {'cols': attrs, 'error': error,
+                   'lat': lat, 'lon': lon})
+
+@add_db_to_request
 def create_9(request):
     return render(request, 'create-9.html')
 
@@ -572,6 +626,7 @@ urlpatterns = [
     url(r'^create-6-b-2$', create_step_6_b_2, name='step6b2'),
     url(r'^create-7$', create_step_7, name='step7'),
     url(r'^create-8$', create_step_8, name='step8'),
+    url(r'^create-8-old$', create_step_8_old, name='step8old'),
     url(r'^create-10$', create_step_10, name='step10'),
     # url(r'^registration$', registration, name='registration'),
     # url(r'^login$', login, name='login'),
