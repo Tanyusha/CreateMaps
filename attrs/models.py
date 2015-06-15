@@ -1,5 +1,6 @@
 from __future__ import unicode_literals, print_function, generators, division
 from datetime import datetime, date
+from warnings import warn
 from django.contrib.contenttypes.fields import GenericForeignKey, \
     GenericRelation
 
@@ -11,6 +12,7 @@ from django.utils.translation import ugettext_lazy as _
 
 __author__ = 'pahaz'
 MODEL_ATTR_FIELD_NAME = 'attrs'
+USE_FILTER_DATATYPE_DETECT_HEURISTICS = True
 
 
 class Attribute(models.Model):
@@ -170,7 +172,8 @@ def get_obj_attrs(entity):
     return {v.name: v.value for v in vs}
 
 
-def filter_by_attrs(qs, type=None, **kwargs):
+def filter_by_attrs(qs, **kwargs):
+    # TODO: check work with Model objects
     _inject_generic_relation(qs)
 
     filters = {}
@@ -178,17 +181,32 @@ def filter_by_attrs(qs, type=None, **kwargs):
         try:
             if isinstance(attr_value, (list, tuple)) and len(attr_value) != 0:
                 type = Attribute.get_type(attr_value[0])
+                if any(map(lambda x: Attribute.get_type(x) != type,
+                           attr_value)):
+                    raise TypeError('You can`t use iterable object with '
+                                    'different type of items')
             else:
                 type = Attribute.get_type(attr_value)
         except TypeError:
-            if type is None:
-                raise TypeError('Unknown type of the attr "{0}" value. '
-                                'Please pass "type" argument if you know '
-                                'value type.')
+            raise TypeError('Unknown type of the "{0}" value'
+                            .format(attr_name))
+
+        if USE_FILTER_DATATYPE_DETECT_HEURISTICS:
+            # may be wrong detected type for datetime objects
+            splitted_attr_name = attr_name.split('__')
+            if len(splitted_attr_name) == 2:
+                if splitted_attr_name[1] in ['year', 'month', 'day',
+                                             'week_day', 'hour', 'minute']:
+                    if type != Attribute.TYPE_INT:
+                        warn('Strange type detection behavior. Detected {0:!r}'
+                             ' but INT expected. DATE type used.'.format(type))
+
+                    type = Attribute.TYPE_DATE
 
         # TODO: work with Q objects
         field = 'type' if type == Attribute.TYPE_NONE else 'value_' + type
-        value = '' if type == Attribute.TYPE_NONE else attr_value
+        value = Attribute.TYPE_NONE if type == Attribute.TYPE_NONE \
+            else attr_value
         if "__" in attr_name:
             attr_name, attr_filters = attr_name.split('__', 1)
             value_filter = "%s__%s__%s" % (

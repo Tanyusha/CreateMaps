@@ -1,4 +1,4 @@
-from attrs.models import set_obj_attrs, get_obj_attrs
+from attrs.models import set_obj_attrs, get_obj_attrs, Attribute
 from customauth.models import MyUser
 from django.db import models
 # from django.contrib.gis.db import models
@@ -47,7 +47,7 @@ class MObject(models.Model):
     data = property(_get_data, _set_data)
 
     def __str__(self):
-        return '<Mobject {0}>'.format(self.id)
+        return '<MObject {0}>'.format(self.id)
 
 
 class Point(models.Model):
@@ -59,6 +59,7 @@ class Point(models.Model):
 class Field(models.Model):
     map = models.ForeignKey(Map, related_name='fields')
     name = models.CharField(max_length=512)
+    # type = models.CharField(max_length=10, choices=Attribute.DATATYPE_CHOICES)
     is_required = models.BooleanField(default=False)
     is_filter = models.BooleanField(default=False)
 

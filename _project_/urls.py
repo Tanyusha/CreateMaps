@@ -1,11 +1,13 @@
-import string
+from datetime import datetime
 from _project_.consts import STEP_1_FILEPATH, STEP_2_DATABASE_INIT_DATA, \
     STEP_3_MAP, STEP_3_DATASET, STEP_4_TYPE, STEP_6_QUERY, \
     REDIRECT_IF_NO_QUERY, \
     STEP_7_LAT, STEP_7_LON, STEP_8_ATTRS
-from attrs.models import set_obj_attrs, prefetch_related_attrs
+from attrs.models import set_obj_attrs, prefetch_related_attrs, \
+    filter_by_attrs, \
+    Attribute
 
-from collections import OrderedDict, namedtuple
+from collections import OrderedDict
 from _project_.utils import add_db_to_request, generate_random_string
 from core.database import TableType
 from core.django_form_factory import make_form
@@ -16,7 +18,6 @@ from django.contrib.auth.decorators import login_required
 from django.core.files import File
 from django.core.files.storage import get_storage_class
 from maps.models import Map, Dataset, Field, MObject, Point
-from maps.utils import dump_map_objs, load_map_objs
 from maps.yandex import create_yandex_poinrs_objects
 import operator
 import os
@@ -26,7 +27,6 @@ from django.contrib import admin
 from django.shortcuts import render, redirect
 from django import forms
 from django.core.cache import cache
-import random
 
 STORAGE = get_storage_class()()
 
@@ -68,14 +68,44 @@ def user(request):
     )
 
 
+KNOWN_TYPES = {
+    'None': None,
+    'True': True,
+    'False': False,
+}
+
+
+def type_detect(v):
+    if v in KNOWN_TYPES:
+        return KNOWN_TYPES[v]
+
+    try:
+        return int(v)
+    except ValueError:
+        try:
+            return float(v)
+        except ValueError:
+            try:
+                return datetime.strptime(v, '%Y-%m-%d')
+            except ValueError:
+                try:
+                    return datetime.strptime(v, "%Y-%m-%d %H:%M:%S")
+                except ValueError:
+                    return v
+
+
 def map(request, id):
     m = Map.objects.get(id=id)
-    d = load_map_objs(m)
-    y = prefetch_related_attrs(m.mobjects.all())
+    # names = [x.name for x in m.fields.all()]
+    filters = {k: type_detect(v) for k, v in request.GET.items() if v}
+    # print(repr(filters))
+    objs = filter_by_attrs(m.mobjects.all(), **filters)
+    y = prefetch_related_attrs(objs)
     y = dumps(create_yandex_poinrs_objects(y, operator.attrgetter('lat'),
                                            operator.attrgetter('lon'),
                                            operator.attrgetter('data')))
-    return render(request, 'map.html', {'map': m, 'objects': d, 'yandex': y})
+    f = dumps([x.name for x in m.fields.all() if x.is_filter])
+    return render(request, 'map.html', {'map': m, 'yandex': y, 'filters': f})
 
 
 @login_required
@@ -527,6 +557,7 @@ def create_step_8_old(request):
                   {'cols': attrs, 'error': error,
                    'lat': lat, 'lon': lon})
 
+
 @add_db_to_request
 def create_9(request):
     return render(request, 'create-9.html')
@@ -540,11 +571,11 @@ def _create_10_set_coordinates(row, type, request):
         lon = request.session[STEP_7_LON]
 
         try:
-            lon = float(row[lon])
+            lon = float(row[lon].replace(',', '.'))
         except:
             lon = None
         try:
-            lat = float(row[lat])
+            lat = float(row[lat].replace(',', '.'))
         except:
             lat = None
     else:
@@ -567,6 +598,8 @@ def _create_10_set_data(row, type, request, selected_table_columns):
     else:
         raise NotImplementedError()
 
+    # change to None empty string values
+    data = {k: (None if v == '' else v) for k, v in data.items()}
     return data
 
 
@@ -600,12 +633,12 @@ def create_step_10(request):
 
     # dump_map_objs(map, objs)
 
-    del request.session[STEP_1_FILEPATH]
-    del request.session[STEP_2_DATABASE_INIT_DATA]
-    del request.session[STEP_8_ATTRS]
-    del request.session[STEP_3_DATASET]
-    del request.session[STEP_3_MAP]
-    del request.session[STEP_4_TYPE]
+    # del request.session[STEP_1_FILEPATH]
+    # del request.session[STEP_2_DATABASE_INIT_DATA]
+    # del request.session[STEP_8_ATTRS]
+    # del request.session[STEP_3_DATASET]
+    # del request.session[STEP_3_MAP]
+    # del request.session[STEP_4_TYPE]
     return render(request, 'create-10.html', {'map': map})
 
 
@@ -614,7 +647,7 @@ urlpatterns = [
     # url(r'^$', '_project_.views.home', name='home'),
     # url(r'^blog/', include('blog.urls')),
 
-    url(r'^map/(\d+)$', map, name='map'),
+    url(r'^map/(\d+)/$', map, name='map'),
     url(r'^$', index, name='index'),
     url(r'^create-1$', create_step_1, name='step1'),
     url(r'^create-2$', create_step_2, name='step2'),

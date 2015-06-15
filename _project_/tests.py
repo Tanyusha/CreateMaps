@@ -22,6 +22,7 @@ QUERY = '''SELECT DISTINCT ОПИ_Участки.Наименование AS [Н
 FROM Спр_ОПИ INNER JOIN ((ОПИ_УчасткиОПИ INNER JOIN ОПИ_Участки ON ОПИ_УчасткиОПИ.ИДУчастка = ОПИ_Участки.ИДУчастка)
 INNER JOIN ОПИ_Месторождения ON ОПИ_Участки.ИДМесторождения = ОПИ_Месторождения.ИДМесторождения) ON Спр_ОПИ.КодОПИ = ОПИ_УчасткиОПИ.КодОПИ
 WHERE ОПИ_Участки.[Координата-долгота] is not null and ОПИ_Участки.[Координата-широта] is not null
+and ОПИ_Участки.[Координата-долгота] <> '' and ОПИ_Участки.[Координата-широта] <> ''
 '''
 LON = "координата-долгота"
 LAT = "координата-широта"
@@ -185,4 +186,4 @@ class CreateTestCase(TestCase):
         self.assertEqual(dataset.map_id, map_id)
 
     def assertMapFields(self, map, fields):
-        self.assertEqual([x.name for x in  map.fields.all()], fields)
+        self.assertEqual([x.name for x in map.fields.all()], fields)

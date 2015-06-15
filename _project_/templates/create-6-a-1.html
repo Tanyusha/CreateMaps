@@ -24,6 +24,13 @@
             <li>{{ x.0 }}</li>
             {% endfor %}
         </ul>
+
+        <ul>
+            {% for x in result %}
+            <li>{{ x }}</li>
+            {% endfor %}
+        </ul>
+
         <ul>
         {% for table in tables %}
             <li>{{ table.name }}</li>
